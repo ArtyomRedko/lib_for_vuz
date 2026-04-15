@@ -1,0 +1,182 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    font-family: system-ui, sans-serif;
+}
+
+.header,
+.footer {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+}
+
+.footer {
+    background: #f5f5f5;
+    border-top: 1px solid #ccc;
+}
+
+.logo-area {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.library-name h1 {
+    font-size: 1.3rem;
+}
+
+.library-name small {
+    font-size: 0.7rem;
+    display: block;
+}
+
+.header-nav,
+.footer-links,
+.user-actions {
+    display: flex;
+    gap: 20px;
+}
+
+.header-nav a,
+.footer-links a {
+    text-decoration: none;
+    color: black;
+    padding: 4px 0;
+}
+
+.header-nav a.active {
+    border-bottom: 2px solid black;
+}
+
+.btn-outline,
+.btn-primary,
+.auth-btn {
+    padding: 6px 16px;
+    border: 1px solid black;
+    background: #eee;
+    cursor: pointer;
+}
+
+.btn-outline {
+    background: transparent;
+}
+
+.main-content {
+    flex: 1;
+    padding: 32px 20px;
+    max-width: 1280px;
+    margin: 0 auto;
+    width: 100%;
+}
+
+.catalog-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 28px;
+    margin-top: 32px;
+}
+
+.book-card {
+    border: 1px solid #ddd;
+    background: white;
+}
+
+.book-cover {
+    text-align: center;
+    padding: 32px 0;
+    font-size: 48px;
+    background: #fafafa;
+}
+
+.book-info {
+    padding: 16px;
+}
+
+.book-title {
+    font-weight: bold;
+    margin-bottom: 6px;
+}
+
+.book-author,
+.book-year {
+    margin-bottom: 4px;
+}
+
+.btn-detail {
+    background: none;
+    border: 1px solid black;
+    padding: 6px 12px;
+    cursor: pointer;
+}
+
+.auth-container {
+    max-width: 450px;
+    margin: 0 auto;
+}
+
+.auth-tabs {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 24px;
+    border-bottom: 1px solid #ccc;
+    padding-bottom: 8px;
+    justify-content: center;
+}
+
+.tab-btn {
+    background: none;
+    border: none;
+    padding: 8px 20px;
+    font-size: 1rem;
+    cursor: pointer;
+}
+
+.tab-btn.active {
+    background: #ccc;
+}
+
+.auth-form {
+    display: none;
+}
+
+.auth-form.active-form {
+    display: block;
+}
+
+.form-group {
+    margin-bottom: 18px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 6px;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    font-size: 1rem;
+}
+
+.footer-inner,
+.footer-links {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 24px;
+}
+
+.footer-contacts span {
+    display: block;
+}

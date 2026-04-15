@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Главная — Библиотека КФУ</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <div id="header-container"></div>
+
+    <main class="main-content">
+        <div class="hero">
+            <h1>Добро пожаловать в библиотеку КФУ</h1>
+            <p>TEST</p>
+            <div class="search-bar">
+                <input type="text" placeholder="Поиск книг, статей, авторов...">
+                <button onclick="alert('Демо-поиск, бэкенд в разработке')">Найти</button>
+            </div>
+        </div>
+
+        <h2 class="section-title">Популярные книги</h2>
+        <div class="catalog-grid">
+            <div class="book-card">
+                <div class="book-cover">📖</div>
+                <div class="book-info">
+                    <div class="book-title">Мастер и Маргарита</div>
+                    <div class="book-author">Михаил Булгаков</div>
+                    <div class="book-year">1967</div>
+                    <button class="btn-detail" onclick="alert('Демо: подробнее о книге')">Подробнее</button>
+                </div>
+            </div>
+            <div class="book-card">
+                <div class="book-cover">📘</div>
+                <div class="book-info">
+                    <div class="book-title">Преступление и наказание</div>
+                    <div class="book-author">Фёдор Достоевский</div>
+                    <div class="book-year">1866</div>
+                    <button class="btn-detail" onclick="alert('Демо: подробнее о книге')">Подробнее</button>
+                </div>
+            </div>
+            <div class="book-card">
+                <div class="book-cover">📕</div>
+                <div class="book-info">
+                    <div class="book-title">Война и мир</div>
+                    <div class="book-author">Лев Толстой</div>
+                    <div class="book-year">1869</div>
+                    <button class="btn-detail" onclick="alert('Демо: подробнее о книге')">Подробнее</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <div id="footer-container"></div>
+    <script src="/js/main.js"></script>
+</body>
+</html>
