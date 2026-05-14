@@ -1,0 +1,176 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "forProjectLibrary API",
+    "version": "1.0.0",
+    "description": "Auto-generated from flask codebase by ApiCopilot."
+  },
+  "servers": [
+    {
+      "url": "/",
+      "description": "Default server"
+    }
+  ],
+  "tags": [
+    {
+      "name": "Server"
+    }
+  ],
+  "paths": {
+    "/uploads/PngBooks/<path{filename}>": {
+      "get": {
+        "tags": [
+          "Server"
+        ],
+        "summary": "Serve image",
+        "description": "",
+        "operationId": "get_serve_image",
+        "parameters": [
+          {
+            "name": "filename",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/": {
+      "get": {
+        "tags": [
+          "Server"
+        ],
+        "summary": "Index",
+        "description": "",
+        "operationId": "get_index",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/index.js": {
+      "get": {
+        "tags": [
+          "Server"
+        ],
+        "summary": "Serve js",
+        "description": "",
+        "operationId": "get_serve_js",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/index.css": {
+      "get": {
+        "tags": [
+          "Server"
+        ],
+        "summary": "Serve css",
+        "description": "",
+        "operationId": "get_serve_css",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/upload_pdf": {
+      "post": {
+        "tags": [
+          "Server"
+        ],
+        "summary": "Upload pdf",
+        "description": "",
+        "operationId": "post_uploadPdf",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": true
+              }
+            }
+          }
+        }
+      }
+    },
+    "/parserMessages": {
+      "get": {
+        "tags": [
+          "Server"
+        ],
+        "summary": "Parser messages",
+        "description": "",
+        "operationId": "get_parser_messages",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {}
+  }
+}

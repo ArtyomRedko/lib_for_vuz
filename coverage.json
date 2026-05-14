@@ -1,0 +1,67 @@
+{
+  "summary": {
+    "framework": "flask",
+    "routesExtracted": 6,
+    "fullyDocumented": 0,
+    "partiallyDocumented": 6,
+    "suspectedMissedFiles": 0
+  },
+  "partial": [
+    {
+      "method": "GET",
+      "path": "/uploads/PngBooks/<path{filename}>",
+      "handlerName": "serve_image",
+      "sourceFile": "server/server.py",
+      "reasons": [
+        "no responses extracted (used default 200/400/500)"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/",
+      "handlerName": "index",
+      "sourceFile": "server/server.py",
+      "reasons": [
+        "no responses extracted (used default 200/400/500)"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/index.js",
+      "handlerName": "serve_js",
+      "sourceFile": "server/server.py",
+      "reasons": [
+        "no responses extracted (used default 200/400/500)"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/index.css",
+      "handlerName": "serve_css",
+      "sourceFile": "server/server.py",
+      "reasons": [
+        "no responses extracted (used default 200/400/500)"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/upload_pdf",
+      "handlerName": "uploadPdf",
+      "sourceFile": "server/server.py",
+      "reasons": [
+        "body schema unknown",
+        "no responses extracted (used default 200/400/500)"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/parserMessages",
+      "handlerName": "parser_messages",
+      "sourceFile": "server/server.py",
+      "reasons": [
+        "no responses extracted (used default 200/400/500)"
+      ]
+    }
+  ],
+  "suspectedMisses": []
+}

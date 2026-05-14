@@ -1,0 +1,3 @@
+[console_scripts]
+crossinstaller = crossinstaller.__main__:main_entry
+

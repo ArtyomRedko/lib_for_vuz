@@ -1,0 +1,116 @@
+Metadata-Version: 2.1
+Name: crossinstaller
+Version: 0.2.0
+Summary: PyInstaller + Docker = CrossInstaller
+Home-page: https://github.com/desty2k/crossinstaller
+Author: Wojciech Wentland
+Author-email: wojciech.wentland@int.pl
+License: MIT
+Keywords: packaging,app,apps,bundle,convert,standalone,executable,pyinstaller,cxfreeze,freeze,py2exe,py2app,bbfreeze,docker
+Platform: UNKNOWN
+Classifier: Development Status :: 3 - Alpha
+Classifier: Environment :: Console
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3 :: Only
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: Implementation :: CPython
+Classifier: Intended Audience :: Developers
+Classifier: Intended Audience :: Other Audience
+Classifier: Intended Audience :: System Administrators
+Classifier: Intended Audience :: Information Technology
+Classifier: Topic :: Software Development
+Classifier: Topic :: Software Development :: Build Tools
+Classifier: Topic :: Software Development :: Interpreters
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
+Classifier: Topic :: System :: Installation/Setup
+Classifier: Topic :: System :: Software Distribution
+Classifier: Topic :: Utilities
+Requires-Python: >=3.9
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: docker
+
+# CrossInstaller
+
+[![Build](https://github.com/desty2k/crossinstaller/actions/workflows/build.yml/badge.svg)](https://github.com/desty2k/crossinstaller/actions/workflows/build.yml)
+[![Version](https://img.shields.io/pypi/v/crossinstaller)](https://pypi.org/project/crossinstaller/)
+[![Version](https://img.shields.io/pypi/dm/crossinstaller)](https://pypi.org/project/crossinstaller/)
+
+Create Python executables for Linux and Windows using one command.
+
+## Installation
+
+From PyPI
+
+```shell
+pip install crossinstaller -U
+```
+
+From sources
+
+```shell
+git clone https://github.com/desty2k/crossinstaller.git
+cd crossinstaller
+pip install .
+```
+
+## Usage
+
+### Creating executables
+
+Target platforms are specified by the `--platform` option. Option can be specified multiple times.
+At least one platform must be specified. Available default platforms are: `win32`, `win64`, `i386`, `amd64`.
+
+```shell
+crossinstaller some_script.py -p amd64 -p win64
+```
+The above command will create two executables: `some_script` for Linux x64 and `some_script.exe` for Windows x64.
+
+### Adding custom platform
+Use `-a`/`--add-platform` option to add custom platform. For example, if you want to create 
+an executable for `platform_name` platform, which use `dockerfile` Dockerfile, you can do it like this:
+```shell
+crossinstaller some_script.py -a platform_name path/to/dockerfile
+```
+Option can be specified multiple times.
+
+### Passing extra arguments to the Pyinstaller
+You can pass extra arguments to the Pyinstaller by using `-e`/`--options` option. 
+Make sure to quote the arguments. __Note the extra space in the argument.__
+```shell
+crossinstaller some_script.py --options " -F --icon icon.ico"
+```
+
+### Specifying the working directory
+By default, the working directory is the same as the script directory. 
+You can specify custom working directory by using `-w`/`--workdir` option.
+```shell
+crossinstaller path/to/some_script.py -w path/
+```
+
+### Using in a script
+You can use crossinstaller as a Python module. Note that working directory will be changed to the script directory.
+
+```python
+from pathlib import Path
+from crossinstaller import Platform, CrossInstaller, get_default_platforms
+
+if __name__ == '__main__':
+    generator = CrossInstaller()
+    # add default platforms
+    generator.add_platforms(get_default_platforms())
+    # add custom platform
+    # note: all files required by the Dockerfile must be in the same directory as the Dockerfile
+    my_platform = Platform("my-platform-64", Path("/usr/bin/my-platform-64/Dockerfile"))
+    generator.add_platform(my_platform)
+    # start crossinstaller
+    generator.start(Path("path/to/my/script.py"), keep_build=True, extra_options="-F")
+    # start is non blocking, you can do other stuff here
+    # or wait for the build to finish
+    generator.wait()
+```
+
+
+
