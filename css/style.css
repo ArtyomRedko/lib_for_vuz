@@ -1,0 +1,413 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+    background: #fff;
+    color: #1a2e2f;
+}
+
+/* ===== Хедер и футер ===== */
+.header,
+.footer {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 24px;
+    background: #fff;
+}
+
+.footer {
+    background: #f5f5f5;
+    border-top: 1px solid #ddd;
+    margin-top: auto;
+}
+
+.logo-area {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.library-name h1 {
+    font-size: 1.4rem;
+    font-weight: 600;
+}
+
+.library-name small {
+    font-size: 0.7rem;
+    display: block;
+    color: #3a6b7a;
+}
+
+.header-nav,
+.footer-links,
+.user-actions {
+    display: flex;
+    gap: 24px;
+}
+
+.header-nav a,
+.footer-links a {
+    text-decoration: none;
+    color: #1a2e2f;
+    font-weight: 500;
+    padding: 4px 0;
+    transition: 0.2s;
+}
+
+.header-nav a:hover,
+.footer-links a:hover {
+    color: #2c5f7a;
+}
+
+.header-nav a.active {
+    border-bottom: 2px solid #2c5f7a;
+    color: #2c5f7a;
+}
+
+/* Единые кнопки для всех действий */
+.btn-outline,
+.btn-primary,
+.auth-btn,
+.btn-search,
+.btn-clear,
+.pagination button,
+.reader-controls button,
+.page-jump button {
+    padding: 8px 24px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: 0.2s;
+    display: inline-block;
+    text-align: center;
+    border: 1px solid #2c5f7a;
+    background: white;
+    color: #2c5f7a;
+}
+
+.btn-primary,
+.btn-search {
+    background: #2c5f7a;
+    color: white;
+    border-color: #2c5f7a;
+}
+
+.btn-primary:hover,
+.btn-search:hover {
+    background: #1a445a;
+    border-color: #1a445a;
+}
+
+.btn-outline:hover,
+.auth-btn:hover,
+.pagination button:hover:not(:disabled),
+.reader-controls button:hover:not(:disabled) {
+    background: #e3f0f5;
+}
+
+.btn-clear {
+    background: #e9ecef;
+    border-color: #adb5bd;
+    color: #2c5f7a;
+}
+
+.btn-clear:hover {
+    background: #dee2e6;
+}
+
+button:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+/* ===== Основной контент ===== */
+.main-content {
+    flex: 1;
+    padding: 32px 24px;
+    max-width: 1280px;
+    margin: 0 auto;
+    width: 100%;
+}
+
+/* ===== КАТАЛОГ ===== */
+.catalog-controls {
+    background: #f9f9f9;
+    padding: 20px 24px;
+    margin: 20px 0 32px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    align-items: flex-end;
+    border: 1px solid #e0e0e0;
+    border-radius: 4px;
+}
+
+.search-box {
+    flex: 2;
+    min-width: 200px;
+}
+
+.search-box label {
+    display: block;
+    font-size: 0.85rem;
+    margin-bottom: 6px;
+    font-weight: 500;
+    color: #2c5f7a;
+}
+
+.search-box input {
+    width: 100%;
+    padding: 10px 16px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 0.95rem;
+}
+
+.search-box input:focus {
+    outline: none;
+    border-color: #2c5f7a;
+}
+
+.results-info {
+    font-size: 0.9rem;
+    color: #2c5f7a;
+    background: #eef2f5;
+    padding: 6px 16px;
+    border-radius: 4px;
+    display: inline-block;
+}
+
+/* Сетка карточек */
+.catalog-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 28px;
+    margin: 32px 0 20px;
+}
+
+.book-card {
+    border: 1px solid #ddd;
+    background: white;
+    transition: transform 0.2s;
+}
+
+.book-card:hover{
+    opacity: 0.5;
+    transform: scale(1.1);
+}
+
+.book-card:active{
+    border: 2px solid rgb(96, 183, 83);
+    opacity: 1;
+    transform: scale(1);
+}
+
+.book-cover {
+    text-align: center;
+    padding: 32px 0;
+    font-size: 56px;
+    background: #fafaf8;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.book-info {
+    padding: 20px;
+}
+
+.book-title {
+    font-weight: 700;
+    font-size: 1.1rem;
+    margin-bottom: 8px;
+}
+
+.book-author,
+.book-year {
+    font-size: 0.9rem;
+    color: #4b5e62;
+    margin-bottom: 6px;
+}
+
+.book-card .reader-link {
+    display: inline-block;
+    margin-top: 16px;
+    text-decoration: none;
+    background: #2c5f7a;
+    color: white;
+    padding: 8px 20px;
+    border-radius: 4px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    border: none;
+    cursor: pointer;
+    text-align: center;
+}
+
+.book-card .reader-link:hover {
+    background: #1a445a;
+}
+
+/* Пагинация (единый стиль с кнопками выше) */
+.pagination {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 16px;
+    margin: 40px 0 20px;
+    padding: 20px 0 10px;
+    border-top: 1px solid #e0e0e0;
+}
+
+.page-indicator {
+    font-size: 0.95rem;
+    background: #f1f3f5;
+    padding: 6px 20px;
+    border-radius: 4px;
+}
+
+.page-jump {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.page-jump input {
+    width: 70px;
+    padding: 8px;
+    text-align: center;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.no-results {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 60px 20px;
+    background: #fafafa;
+    border-radius: 4px;
+    font-size: 1.2rem;
+    color: #6c757d;
+}
+
+/* ===== РИДЕР ===== */
+.reader-container {
+    background: #ffffff;
+    border: 1px solid #e0e0e0;
+    margin-top: 16px;
+}
+
+.viewer-area {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 32px;
+    background: #fefefc;
+    min-height: 500px;
+}
+
+.image-placeholder {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+}
+
+.image-placeholder img {
+    max-width: 100%;
+    max-height: 520px;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    border: 1px solid #eee;
+}
+
+.page-note {
+    margin-top: 20px;
+    font-size: 0.85rem;
+    color: #5a7b85;
+    background: #f5f7f9;
+    padding: 6px 18px;
+    border-radius: 4px;
+}
+
+.reader-controls {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    padding: 24px 32px 32px;
+    border-top: 1px solid #eef2f5;
+    background: #ffffff;
+}
+
+.page-indicator-modern {
+    background: #edf3f5;
+    padding: 6px 22px;
+    border-radius: 4px;
+    font-weight: 500;
+    font-size: 0.95rem;
+    color: #1a445a;
+}
+
+.back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 20px;
+    text-decoration: none;
+    color: #2c5f7a;
+    font-weight: 500;
+}
+
+.back-link:hover {
+    text-decoration: underline;
+}
+
+/* Адаптивность */
+@media (max-width: 768px) {
+    .header, .footer {
+        flex-direction: column;
+        gap: 12px;
+        text-align: center;
+    }
+    .header-nav, .user-actions, .footer-links {
+        justify-content: center;
+    }
+    .catalog-controls {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    .search-actions {
+        justify-content: flex-end;
+    }
+    .pagination {
+        flex-direction: column;
+        gap: 12px;
+    }
+    .reader-controls {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    .jump-panel {
+        justify-content: center;
+    }
+    .viewer-area {
+        padding: 20px;
+        min-height: 320px;
+    }
+    .image-placeholder img {
+        max-height: 55vh;
+    }
+}

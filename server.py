@@ -48,13 +48,45 @@ def serve_image(filename):
 def index():
     return send_from_directory('.', 'index.html')
 
+@app.route('/catalog.html')
+def catalog_html():
+    return send_from_directory('.', 'catalog.html')
+
+@app.route('/mainPage')
+def mainPage():
+    return send_from_directory('.', 'index1.html')
+
 @app.route('/index.js')
 def serve_js():
     return send_from_directory('.', 'index.js')
 
+@app.route('/js/main.js')
+def main_js():
+    return send_from_directory('.', 'js/main.js')
+
+@app.route('/js/reader.js')
+def reader_js():
+    return send_from_directory('.', 'js/reader.js')
+
+@app.route('/js/catalog.js')
+def catalog_js():
+    return send_from_directory('.', 'js/catalog.js')
+
 @app.route('/index.css')
 def serve_css():
     return send_from_directory('.', 'index.css')
+
+@app.route('/css/style.css')
+def style_css():
+    return send_from_directory('.', 'css/style.css')
+
+@app.route('/components/footer.html')
+def footer_html():
+    return send_from_directory('.', 'components/footer.html')
+
+@app.route('/components/header.html')
+def header_html():
+    return send_from_directory('.', 'components/header.html')
     
 # /uploads/PngBooks/Directory-Presentation/Presentation_2.jpg
 @app.route('/upload_pdf', methods=['POST'])
@@ -86,6 +118,29 @@ def uploadPdf():
         print(f"{filePath} - deleted")
 
     return jsonify({"status": "ok", "maxPage": f"{maxPage}", "message": f"Книга {bookId} загружена", "link": f"{DbLink}"})
+
+
+@app.route('/request_books', methods=['POST'])
+def request_books():
+    print('#1' * 20)
+    start_index = int(request.form["start_index"])
+    end_index = int(request.form["end_index"])
+
+    
+
+    parse_books_by_index = 'select title, autor, book_year, link from BookLibraryForUniversity.Books where id > %s and id < %s;'
+    params = (start_index, end_index)
+    cursor.execute(parse_books_by_index, params)
+    
+    # strList = '@'.join([','.join([x for x in t]) for t in thislist])
+    bookList = ','.join([t[0] for t in cursor.fetchall()])
+    print(bookList)
+    print('#2' * 20)
+
+    return jsonify({"BookList": bookList})
+
+
+
 
 # uploads/PngBooks
 def saveJpegsFromPdf(namePdf, clearNamePdf):

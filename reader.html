@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Читатель — КФУ Библиотека</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div id="header-container"></div>
+
+    <main class="main-content">
+        <a href="catalog.html" class="back-link">← Вернуться в каталог</a>
+
+        <div class="reader-container">
+            <div class="viewer-area" id="imageViewerArea">
+                <div class="image-placeholder">
+                    <img src="https://avatarko.ru/img/kartinka/1/multfilm_pingviny.jpg">                
+                    <p id="pageImageLabel">Изображение страницы № —</p>
+                    <div class="page-note">Здесь будет отображаться страница книги</div>
+                </div>
+            </div>
+
+            <div class="reader-controls">
+                <button id="prevPageBtn" disabled>◀ Предыдущая</button>
+                <span class="page-indicator-modern" id="pageIndicator">Страница 1 / 1</span>
+                <button id="nextPageBtn" disabled>Следующая ▶</button>
+                <div class="jump-panel">
+                    <span>Перейти</span>
+                    <input type="number" id="pageJumpInput" value="1" min="1">
+                    <button id="jumpToPageBtn">OK</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <div id="footer-container"></div>
+
+    <script src="/js/main.js"></script>
+    <script src="/js/reader.js"></script>
+</body>
+</html>

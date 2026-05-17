@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Каталог — Библиотека КФУ</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <div id="header-container"></div>
+
+    <main class="main-content">
+        <h1>Электронный каталог</h1>
+        <div class="catalog-controls">
+            <div class="search-box">
+                <label>Поиск по названию или автору</label>
+                <input type="text" id="searchInput" placeholder="Например: Достоевский, Война и мир...">
+            </div>
+            <div class="search-actions">
+                <button id="searchBtn" class="btn-search">Найти</button>
+                <button id="resetSearchBtn" class="btn-clear">Сбросить</button>
+            </div>
+            <div class="results-info" id="resultsInfo">Все книги</div>
+        </div>
+
+        <div id="catalogGrid" class="catalog-grid"></div>
+
+        <div class="pagination" id="catalogPagination">
+            <button id="prevPageBtn" disabled>◀ Назад</button>
+            <span class="page-indicator" id="pageIndicator">Страница 1 / 1</span>
+            <button id="nextPageBtn" disabled>Вперед ▶</button>
+            <div class="page-jump">
+                <span>Перейти к стр.</span>
+                <input type="number" id="pageJumpInput" min="1" value="1">
+                <button id="jumpToPageBtn">OK</button>
+            </div>
+        </div>
+    </main>
+
+    <div id="footer-container"></div>
+
+    <script src="/js/main.js"></script>
+    <script src="/js/catalog.js"></script>
+</body>
+</html>
