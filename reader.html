@@ -15,16 +15,16 @@
         <div class="reader-container">
             <div class="viewer-area" id="imageViewerArea">
                 <div class="image-placeholder">
-                    <img src="https://avatarko.ru/img/kartinka/1/multfilm_pingviny.jpg">                
+                    <img id="viewPage" src="https://avatarko.ru/img/kartinka/1/multfilm_pingviny.jpg">                
                     <p id="pageImageLabel">Изображение страницы № —</p>
                     <div class="page-note">Здесь будет отображаться страница книги</div>
                 </div>
             </div>
 
             <div class="reader-controls">
-                <button id="prevPageBtn" disabled>◀ Предыдущая</button>
+                <button id="prevPageBtn" >◀ Предыдущая</button>
                 <span class="page-indicator-modern" id="pageIndicator">Страница 1 / 1</span>
-                <button id="nextPageBtn" disabled>Следующая ▶</button>
+                <button id="nextPageBtn" >Следующая ▶</button>
                 <div class="jump-panel">
                     <span>Перейти</span>
                     <input type="number" id="pageJumpInput" value="1" min="1">
@@ -35,8 +35,8 @@
     </main>
 
     <div id="footer-container"></div>
-
+    <script type="module" src="index.js"></script>
     <script src="/js/main.js"></script>
-    <script src="/js/reader.js"></script>
+    
 </body>
 </html>

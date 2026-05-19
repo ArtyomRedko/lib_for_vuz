@@ -72,6 +72,14 @@ function initLoginToggle() {
     }
 }
 
+// Для POST нужна отдельная функция
+async function usePostRequest(requestURL, formData) {
+    const response = await fetch(requestURL, {
+        method: 'POST',
+        body: formData
+    });
+    return await response.json();
+}
 
 async function initPage() {
     await Promise.all([

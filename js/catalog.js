@@ -1,22 +1,25 @@
 // Эту логику делала нейронка, нужно все поменять
 (function() {
-    BOOKS_DATA = [
-        { id: 1, title: "Мастер и Маргарита", author: "Михаил Булгаков", year: 1967, cover: "📖" },
-        { id: 2, title: "Преступление и наказание", author: "Фёдор Достоевский", year: 1866, cover: "📘" },
-        { id: 3, title: "Война и мир", author: "Лев Толстой", year: 1869, cover: "📕" },
-        { id: 4, title: "Евгений Онегин", author: "Александр Пушкин", year: 1833, cover: "📙" },
-        { id: 5, title: "Мёртвые души", author: "Николай Гоголь", year: 1842, cover: "📔" },
-        { id: 6, title: "Тихий Дон", author: "Михаил Шолохов", year: 1940, cover: "📗" },
-        { id: 7, title: "Собачье сердце", author: "Михаил Булгаков", year: 1925, cover: "📓" },
-        { id: 8, title: "Анна Каренина", author: "Лев Толстой", year: 1877, cover: "📒" },
-        { id: 9, title: "Идиот", author: "Фёдор Достоевский", year: 1869, cover: "📚" },
-        { id: 10, title: "Братья Карамазовы", author: "Фёдор Достоевский", year: 1880, cover: "📜" },
-        { id: 11, title: "Капитанская дочка", author: "Александр Пушкин", year: 1836, cover: "📖" },
-        { id: 12, title: "Герой нашего времени", author: "Михаил Лермонтов", year: 1840, cover: "📘" },
-        { id: 13, title: "Ревизор", author: "Николай Гоголь", year: 1836, cover: "📙" },
-        { id: 14, title: "Отцы и дети", author: "Иван Тургенев", year: 1862, cover: "📗" }
-    ];
+    // BOOKS_DATA = [
+    //     { id: 1, title: "Мастер и Маргарита", author: "Михаил Булгаков", year: 1967, cover: "📖" },
+    //     { id: 2, title: "Преступление и наказание", author: "Фёдор Достоевский", year: 1866, cover: "📘" },
+    //     { id: 3, title: "Война и мир", author: "Лев Толстой", year: 1869, cover: "📕" },
+    //     { id: 4, title: "Евгений Онегин", author: "Александр Пушкин", year: 1833, cover: "📙" },
+    //     { id: 5, title: "Мёртвые души", author: "Николай Гоголь", year: 1842, cover: "📔" },
+    //     { id: 6, title: "Тихий Дон", author: "Михаил Шолохов", year: 1940, cover: "📗" },
+    //     { id: 7, title: "Собачье сердце", author: "Михаил Булгаков", year: 1925, cover: "📓" },
+    //     { id: 8, title: "Анна Каренина", author: "Лев Толстой", year: 1877, cover: "📒" },
+    //     { id: 9, title: "Идиот", author: "Фёдор Достоевский", year: 1869, cover: "📚" },
+    //     { id: 10, title: "Братья Карамазовы", author: "Фёдор Достоевский", year: 1880, cover: "📜" },
+    //     { id: 11, title: "Капитанская дочка", author: "Александр Пушкин", year: 1836, cover: "📖" },
+    //     { id: 12, title: "Герой нашего времени", author: "Михаил Лермонтов", year: 1840, cover: "📘" },
+    //     { id: 13, title: "Ревизор", author: "Николай Гоголь", year: 1836, cover: "📙" },
+    //     { id: 14, title: "Отцы и дети", author: "Иван Тургенев", year: 1862, cover: "📗" }
+    // ];
+    BOOKS_DATA = [];
+    
 
+    var textList;
     BooksData2 = [];
 
     let currentPage = 1;
@@ -35,6 +38,14 @@
     const resultsInfo = document.getElementById('resultsInfo');
 
     function escapeHtml(str) {
+        // Добавьте эту проверку в начало функции
+        if (str === undefined || str === null) {
+            return '';
+        }
+        
+        // Преобразуем в строку на всякий случай
+        const safeStr = String(str);
+
         return str.replace(/[&<>]/g, function(m) {
             if (m === '&') return '&amp;';
             if (m === '<') return '&lt;';
@@ -88,8 +99,8 @@
         let html = '';
         for (const book of paginatedBooks) {
             html += `
-                <div class="book-card">
-                    <div class="book-cover">${book.cover}</div>
+                <div class="book-card" data-href="reader.html?id=${book.id}">
+                    <div class="book-cover"><img class="cover" src="${book.cover}"></div>
                     <div class="book-info">
                         <div class="book-title">${escapeHtml(book.title)}</div>
                         <div class="book-author">${escapeHtml(book.author)}</div>
@@ -163,16 +174,31 @@
         searchInput.addEventListener('keypress', (e) => {
             if (e.key === 'Enter') applySearch();
         });
+        document.querySelectorAll('.book-card').forEach(container => {
+            container.addEventListener('click', (e) => {
+                const href = container.dataset.href;
+                if (href) window.location.href = href;
+            });
+        });
     }
 
 
+
     async function initCatalog() {
-        bindCatalogEvents();
+        textList = await request_books(0, 15);
+        let rowdata = textList.BookList.split("@").map((x) => x.split(","));
+        BOOKS_DATA = rowdata.map(([id, title, author, year, cover]) => ({
+            id: id,
+            title: title,
+            author: author,
+            year: year,
+            cover: cover
+        }));
+        // window.alert(BOOKS_DATA);
         filteredBooks = [...BOOKS_DATA];
         currentPage = 1;
         renderCatalog();
-        let textList = await request_books(2, 7);
-        window.alert(textList.BookList);
+        bindCatalogEvents();        
     }
 
     if (document.readyState === 'loading') {
