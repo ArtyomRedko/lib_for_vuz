@@ -13,7 +13,13 @@ function initForms(){
         formData.append('password', form_login_pass);
         
         let result = await usePostRequest('/request_login', formData);
-        if (result.result == "success") window.alert("success login)");
+        if (result.result == "success") {
+            window.alert("success login)");
+            saveUserSession({user_name: result.name, mail: form_login_mail});
+            
+            window.alert(getUserSession().mail);
+        }
+        location.reload();
     })
 
     register_form.addEventListener("submit", async (e) => {
@@ -31,11 +37,11 @@ function initForms(){
         formData.append('password', form_register_pass);
         formData.append('fullName', form_register_fullName);
         
-        
         let result = await usePostRequest('/request_register', formData);
         if (result.result == "success") window.alert("success register)");
         window.alert(result.result);
     })
 };
+
 
 document.addEventListener('DOMContentLoaded', initForms);

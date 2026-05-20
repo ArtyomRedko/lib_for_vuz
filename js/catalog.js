@@ -104,10 +104,11 @@
                     <div class="book-info">
                         <div class="book-title">${escapeHtml(book.title)}</div>
                         <div class="book-author">${escapeHtml(book.author)}</div>
-                        <div class="book-year">${book.year}</div>
+                        <div class="book-year">${escapeHtml(book.year)}</div>
                         <a class="reader-link" href="reader.html?id=${book.id}">Подробнее</a>
                     </div>
                 </div>
+                
             `;
         }
         catalogGrid.innerHTML = html;

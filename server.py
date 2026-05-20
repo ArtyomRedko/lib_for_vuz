@@ -40,83 +40,120 @@ def cleanerFromPdf(name):
     newName = name.replace('pdf', '')
     newName = newName.replace('.', '')
     return newName
-# Папка для сохранения PDF
-UPLOAD_FOLDER = 'uploads'
-os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+# # Папка для сохранения PDF
+# UPLOAD_FOLDER = 'uploads'
+# os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
-@app.route('/uploads/PngBooks/<path:filename>')
-def serve_image(filename):
-    return send_from_directory('uploads/PngBooks', filename)
+# @app.route('/uploads/PngBooks/<path:filename>')
+# def serve_image(filename):
+#     return send_from_directory('uploads/PngBooks', filename)
 
-@app.route('/')
-def index():
-    return send_from_directory('.', 'index.html')
+# @app.route('/')
+# def index():
+#     return send_from_directory('.', 'catalog.html')
 
-@app.route('/catalog.html')
-def catalog_html():
-    return send_from_directory('.', 'catalog.html')
+# @app.route('/catalog.html')
+# def catalog_html():
+#     return send_from_directory('.', 'catalog.html')
 
-@app.route('/reader.html')
-def reader_html():
-    return send_from_directory('.', 'reader.html')
+# @app.route('/reader.html')
+# def reader_html():
+#     return send_from_directory('.', 'reader.html')
 
-@app.route('/mainPage')
-def mainPage():
-    return send_from_directory('.', 'index1.html')
+# @app.route('/mainPage')
+# def mainPage():
+#     return send_from_directory('.', 'index1.html')
 
-@app.route('/index.js')
-def serve_js():
-    return send_from_directory('.', 'index.js')
+# @app.route('/index.js')
+# def serve_js():
+#     return send_from_directory('.', 'index.js')
 
-@app.route('/js/main.js')
-def main_js():
-    return send_from_directory('.', 'js/main.js')
+# @app.route('/js/main.js')
+# def main_js():
+#     return send_from_directory('.', 'js/main.js')
 
-@app.route('/js/reader.js')
-def reader_js():
-    return send_from_directory('.', 'js/reader.js')
+# @app.route('/js/reader.js')
+# def reader_js():
+#     return send_from_directory('.', 'js/reader.js')
 
-@app.route('/js/catalog.js')
-def catalog_js():
-    return send_from_directory('.', 'js/catalog.js')
+# @app.route('/js/catalog.js')
+# def catalog_js():
+#     return send_from_directory('.', 'js/catalog.js')
 
-@app.route('/js/profile.js')
-def profile_js():
-    return send_from_directory('.', 'js/profile.js')
+# @app.route('/js/auth.js')
+# def auth_js():
+#     return send_from_directory('.', 'js/auth.js')
 
-@app.route('/js/initListenner.js')
-def initListenner_js():
-    return send_from_directory('.', 'js/initListenner.js')
+# @app.route('/js/profile.js')
+# def profile_js():
+#     return send_from_directory('.', 'js/profile.js')
 
-@app.route('/index.css')
-def serve_css():
-    return send_from_directory('.', 'index.css')
+# @app.route('/js/initListenner.js')
+# def initListenner_js():
+#     return send_from_directory('.', 'js/initListenner.js')
 
-@app.route('/css/style.css')
-def style_css():
-    return send_from_directory('.', 'css/style.css')
+# @app.route('/index.css')
+# def serve_css():
+#     return send_from_directory('.', 'index.css')
 
-@app.route('/components/footer.html')
-def footer_html():
-    return send_from_directory('.', 'components/footer.html')
+# @app.route('/css/style.css')
+# def style_css():
+#     return send_from_directory('.', 'css/style.css')
 
-@app.route('/components/header.html')
-def header_html():
-    return send_from_directory('.', 'components/header.html')
+# @app.route('/css/catalog.css')
+# def catalog_css():
+#     return send_from_directory('.', 'css/catalog.css')
 
-@app.route('/login.html')
-def login_html():
-    return send_from_directory('.', 'login.html')
+# @app.route('/components/footer.html')
+# def footer_html():
+#     return send_from_directory('.', 'components/footer.html')
 
-@app.route('/profile.html')
-def profile_html():
-    return send_from_directory('.', 'profile.html')
+# @app.route('/components/header.html')
+# def header_html():
+#     return send_from_directory('.', 'components/header.html')
+
+# @app.route('/login.html')
+# def login_html():
+#     return send_from_directory('.', 'login.html')
+
+# @app.route('/profile.html')
+# def profile_html():
+#     return send_from_directory('.', 'profile.html')
+
+# Универсальный для JS
+@app.route('/js/<path:filename>')
+def serve_js(filename):
+    return send_from_directory('js', filename)
+
+# Универсальный для CSS
+@app.route('/css/<path:filename>')
+def serve_css(filename):
+    return send_from_directory('css', filename)
+
+# Универсальный для картинок
+@app.route('/images/<path:filename>')
+def serve_images(filename):
+    return send_from_directory('images', filename)
+
+# Универсальный для загрузок
+@app.route('/uploads/<path:filename>')
+def serve_uploads(filename):
+    return send_from_directory('uploads', filename)
+
+# Универсальный для ВСЕХ HTML (если не нужны красивые URL)
+@app.route('/<path:filename>')
+def serve_all_html(filename):
+    if filename.endswith('.html'):
+        return send_from_directory('.', filename)
+    return "Page not found", 404
+
     
 # /uploads/PngBooks/Directory-Presentation/Presentation_2.jpg
 @app.route('/upload_pdf', methods=['POST'])
 def uploadPdf():
     file = request.files["pdf"]
     bookId = request.form["book_id"]
+    autor = request.form["autor"] # autor
 
     host_url = request.host_url.rstrip('/')
     
@@ -133,7 +170,7 @@ def uploadPdf():
     cursor = conn.cursor()
     use_DB = 'USE BookLibraryForUniversity;'
     query_insert_book_toDb = 'insert into Books (title, autor, book_description, link, last_page) values (%s, %s, %s, %s, %s);'
-    params = (clearNamePdf, "bezAutora", "kNiga top", DbLink, f"{maxPage}")
+    params = (clearNamePdf, autor, "description", DbLink, f"{maxPage}")
     cursor.execute(use_DB)
     cursor.execute(query_insert_book_toDb, params)
     conn.commit()
@@ -209,7 +246,7 @@ def request_request_login():
     if userInfo[3] != password:
         return jsonify({"result": "mail or password incorrect"})
     
-
+    print(userInfo[0])
     cursor.close()
     conn.close()
 

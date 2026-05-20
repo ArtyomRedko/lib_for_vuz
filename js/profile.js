@@ -13,8 +13,9 @@ function initForms(){
         return;
         }
         else resultField.textContent = "wait for process)";
+        let userInfo = getUserSession();
 
-        let textResult = await uploadPDF(pdfInput, pdfInput.name);
+        let textResult = await uploadPDF(pdfInput, pdfInput.name, userInfo.user_name);
         textJsonPdf = textResult.link;
         resultField.setAttribute('hidden', 'hidden');
         window.alert("book is loaded"/*textJsonPdf*/);
@@ -31,10 +32,11 @@ async function usePostRequest(requestURL, formData) {
     return await response.json();
 }
 
-async function uploadPDF(file, bookId) {
+async function uploadPDF(file, bookId, autor) {
     const formData = new FormData();
     formData.append('pdf', file);
     formData.append('book_id', bookId);
+    formData.append('autor', autor);
 
     return await usePostRequest('/upload_pdf', formData);
 }
