@@ -40,9 +40,9 @@ def cleanerFromPdf(name):
     newName = name.replace('pdf', '')
     newName = newName.replace('.', '')
     return newName
-# # Папка для сохранения PDF
-# UPLOAD_FOLDER = 'uploads'
-# os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+# Папка для сохранения PDF
+UPLOAD_FOLDER = 'uploads'
+os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
 # @app.route('/uploads/PngBooks/<path:filename>')
 # def serve_image(filename):
@@ -120,6 +120,11 @@ def cleanerFromPdf(name):
 # def profile_html():
 #     return send_from_directory('.', 'profile.html')
 
+# /uploads/PngBooks
+@app.route('/uploads/PngBooks/<path:filename>')
+def serve_pngBooks(filename):
+    return send_from_directory('uploads/PngBooks', filename)
+
 # Универсальный для JS
 @app.route('/js/<path:filename>')
 def serve_js(filename):
@@ -164,7 +169,7 @@ def uploadPdf():
     
     maxPage = saveJpegsFromPdf(filename, clearNamePdf)
 
-    DbLink = f"http://192.168.1.101:8080/uploads/PngBooks/Directory-{clearNamePdf}/{clearNamePdf}_0.jpg"
+    DbLink = f"/uploads/PngBooks/Directory-{clearNamePdf}/{clearNamePdf}_0.jpg"
 
     conn = get_db_connection()
     cursor = conn.cursor()
@@ -298,7 +303,7 @@ if __name__ == '__main__':
     if not os.path.exists('uploads/PngBooks'):
         os.mkdir('uploads/PngBooks')
     print(f"\n\nrun in browser by url earler ^ --\n\n")
-    app.run(host='0.0.0.0', port=8080, debug=True)
+    app.run(host='192.168.1.100', port=8080, debug=True)
 
 
 
