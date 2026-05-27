@@ -303,7 +303,7 @@ if __name__ == '__main__':
     if not os.path.exists('uploads/PngBooks'):
         os.mkdir('uploads/PngBooks')
     print(f"\n\nrun in browser by url earler ^ --\n\n")
-    app.run(host='192.168.1.100', port=8080, debug=True)
+    app.run(host='127.0.0.1', port=8080, debug=True)
 
 
 
