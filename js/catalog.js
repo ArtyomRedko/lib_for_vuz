@@ -24,7 +24,7 @@
 
     let currentPage = 1;
     let filteredBooks = [...BOOKS_DATA];
-    const BOOKS_PER_PAGE = 6;
+    const BOOKS_PER_PAGE = 8;
 
     const catalogGrid = document.getElementById('catalogGrid');
     const prevBtn = document.getElementById('prevPageBtn');

@@ -18,7 +18,7 @@ CORS(app)
 DB_CONFIG = {
     'host': 'localhost',
     'user': 'root',
-    'password': '1234',
+    'password': '220103гш',
     'database': 'BookLibraryForUniversity'
 }
 
@@ -284,7 +284,7 @@ def request_request_register():
 
 # uploads/PngBooks
 def saveJpegsFromPdf(namePdf, clearNamePdf):
-    pages = convert_from_path(f'uploads/{namePdf}', 150)
+    pages = convert_from_path(f'uploads/{namePdf}', 150, poppler_path=r"D:\poppler\Library\bin")
     os.mkdir(f'uploads/PngBooks/Directory-{clearNamePdf}')
     maxPage = 0
 

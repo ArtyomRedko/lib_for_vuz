@@ -3,22 +3,59 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Мой формуляр — Библиотека КФУ</title>
+    <title>Личный кабинет — Библиотека КФУ</title>
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
     <div id="header-container"></div>
     <main class="main-content">
-        <div class="placeholder-page">
-            <h2>📘 Мой формуляр</h2>
-            <p id="name-place" >Функционал личного кабинета будет доступен позже.</p>
-            <p id="email-place" >Здесь появятся: закладки, история чтения и т.д.</p>
-            <div class="container retro95">
-                <button class="retro95 btn" id="request">request</button>
-                <input class="retro95" type="file" multiple id="pdfInput" title="choice file">
-                <span hidden="hidden" id="result">some text</span>
+        <div class="profile-container">
+            <div id="profile-verification" >
+                <div class="unauthorized-card">
+                    <h3>Доступ к личному кабинету</h3>
+                    <p>Пожалуйста, войдите или зарегистрируйтесь, чтобы увидеть информацию о профиле.</p>
+                    <div class="unauthorized-buttons">
+                        <a href="login.html" class="btn-outline">Вход</a>
+                        <a href="login.html#register" class="btn-primary">Регистрация</a>
+                    </div>
+                </div>
             </div>
-            <button class="btn-primary" style="margin-top: 20px;" onclick="alert('Демо-режим')">Обновить</button>
+
+            <div id="profile-main" class="profile-card" hidden="hidden">
+                <div class="profile-header">
+                    <h2 id="name-place">Иванов Иван Иванович</h2>
+                    <p class="profile-role" id="role-place">Студент</p>
+                </div>
+
+                <div class="profile-info">
+                    <div class="profile-info-item">
+                        <span class="info-label">Электронная почта</span>
+                        <span id="email-place" class="info-value">ivanov228@example.ru</span>
+                    </div>
+                    <div id="student-info" hidden="hidden">
+                        <div class="profile-info-item">
+                            <span class="info-label">Группа</span>
+                            <span id="group-place" class="info-value">ПИ-б-о-232</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="teacher">
+                    <div class="upload-section">
+                        <h4>Добавить новый материал</h4>
+                        <p class="upload-description">Загрузите PDF-файл для публикации в каталоге.</p>
+                        <div class="upload-controls">
+                            <input type="file" id="pdfInput" accept=".pdf" class="file-input">
+                            <button id="request" class="btn-primary upload-btn">Загрузить</button>
+                        </div>
+                        <span hidden="hidden" id="result" class="upload-result"></span>
+                    </div>
+                </div>
+
+                <div class="profile-actions">
+                    <button class="btn-outline logout-btn">Выйти из аккаунта</button>
+                </div>
+            </div>
         </div>
     </main>
     <div id="footer-container"></div>

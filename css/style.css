@@ -523,3 +523,313 @@ body {
 .main-content {
     flex: 1;
 }
+
+/* ===== СТРАНИЦА ЧТЕНИЯ (reader.html) — МИНИМАЛИСТИЧНО ===== */
+.back-link {
+    display: inline-block;
+    margin-bottom: 20px;
+    color: #C17A3A;
+    text-decoration: none;
+    font-size: 0.9rem;
+}
+
+.back-link:hover {
+    text-decoration: underline;
+}
+
+.reader-container {
+    max-width: 1000px;
+    margin: 0 auto;
+    background: transparent;
+}
+
+.viewer-area {
+    text-align: center;
+    padding: 20px 0;
+}
+
+#viewPage {
+    max-width: 100%;
+    height: auto;
+    max-height: 80vh;
+    object-fit: contain;
+    background: white;
+}
+
+#pageImageLabel {
+    margin-top: 10px;
+    font-size: 0.8rem;
+    color: #8B8B8B;
+}
+
+.page-note {
+    display: none;  /* скрываем подсказку, она не нужна */
+}
+
+.reader-controls {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+    margin: 20px 0 40px;
+    flex-wrap: wrap;
+}
+
+.reader-controls button {
+    padding: 6px 18px;
+    border: 1px solid #E0DCD5;
+    background: white;
+    border-radius: 30px;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: 0.15s;
+    color: #2D2A24;
+}
+
+.reader-controls button:hover {
+    background: #F5F2EC;
+    border-color: #C17A3A;
+}
+
+.reader-controls button:disabled {
+    opacity: 0.4;
+    cursor: default;
+}
+
+.page-indicator-modern {
+    font-size: 0.85rem;
+    color: #4A4A4A;
+    background: #F9F8F5;
+    padding: 5px 14px;
+    border-radius: 30px;
+}
+
+.jump-panel {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: #F9F8F5;
+    padding: 3px 12px;
+    border-radius: 30px;
+}
+
+.jump-panel span {
+    font-size: 0.8rem;
+    color: #4A4A4A;
+}
+
+.jump-panel input {
+    width: 55px;
+    padding: 5px 6px;
+    border: 1px solid #E0DCD5;
+    border-radius: 30px;
+    text-align: center;
+    font-size: 0.8rem;
+}
+
+.jump-panel button {
+    padding: 4px 12px;
+    font-size: 0.75rem;
+}
+
+/* ===== СТРАНИЦА ПРОФИЛЯ (строгий лаконичный стиль) ===== */
+.profile-container {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+/* Карточка профиля */
+.profile-card {
+    background: #FFFFFF;
+    border-radius: 20px;
+    border: 1px solid #F0EBE4;
+    padding: 32px;
+    margin-bottom: 30px;
+}
+
+/* Заголовок профиля */
+.profile-header {
+    margin-bottom: 28px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #F0EBE4;
+}
+
+.profile-header h2 {
+    font-size: 1.6rem;
+    font-weight: 600;
+    color: #2D2A24;
+    margin-bottom: 6px;
+}
+
+.profile-role {
+    font-size: 0.9rem;
+    color: #8B8B8B;
+    font-weight: 400;
+}
+
+/* Информационные строки */
+.profile-info-item {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: baseline;
+    padding: 12px 0;
+    border-bottom: 1px solid #F0EBE4;
+}
+
+.info-label {
+    font-weight: 500;
+    color: #4A4A4A;
+    font-size: 0.9rem;
+    width: 180px;
+}
+
+.info-value {
+    color: #2D2A24;
+    font-weight: 400;
+    font-size: 0.95rem;
+    flex: 1;
+    text-align: right;
+}
+
+/* Секция загрузки для преподавателя */
+.upload-section {
+    margin: 20px 0;
+}
+
+.upload-section h4 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #2D2A24;
+    margin-bottom: 8px;
+}
+
+.upload-description {
+    font-size: 0.85rem;
+    color: #6C6C6C;
+    margin-bottom: 20px;
+}
+
+.upload-controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    align-items: center;
+}
+
+.file-input {
+    flex: 1;
+    border-radius: 40px;
+    background: white;
+    font-size: 0.9rem;
+}
+
+.file-input::file-selector-button {
+    background: #F0EBE4;
+    border: none;
+    padding: 6px 14px;
+    border-radius: 30px;
+    cursor: pointer;
+    margin-right: 12px;
+    font-weight: 500;
+    transition: 0.2s;
+}
+
+.file-input::file-selector-button:hover {
+    background: #E0DCD5;
+}
+
+.upload-btn {
+    background: #612d00;
+    border: none;
+    padding: 10px 28px;
+    border-radius: 40px;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+.upload-result {
+    display: block;
+    margin-top: 14px;
+    font-size: 0.85rem;
+    color: #C17A3A;
+}
+
+/* Кнопка выхода */
+.profile-actions {
+    margin-top: 32px;
+    text-align: center;
+    padding-top: 24px;
+    border-top: none;
+}
+
+.logout-btn {
+    background: transparent;
+    border: 1px solid #C17A3A;
+    color: #C17A3A;
+    padding: 8px 32px;
+}
+
+.logout-btn:hover {
+    background: #C17A3A;
+    color: white;
+}
+
+/* Блок для неавторизованного пользователя */
+.unauthorized-card {
+    background: #FFFFFF;
+    border-radius: 20px;
+    border: 1px solid #F0EBE4;
+    padding: 40px 32px;
+    text-align: center;
+}
+
+.unauthorized-card h3 {
+    font-size: 1.6rem;
+    font-weight: 600;
+    color: #2D2A24;
+    margin-bottom: 16px;
+}
+
+.unauthorized-card p {
+    color: #4A4A4A;
+    max-width: 380px;
+    margin: 0 auto 28px;
+    line-height: 1.4;
+}
+
+.unauthorized-buttons {
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+/* Адаптация */
+@media (max-width: 600px) {
+    .profile-card {
+        padding: 20px;
+    }
+    .profile-header h2 {
+        font-size: 1.3rem;
+    }
+    .profile-info-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 6px;
+    }
+    .info-label {
+        width: auto;
+    }
+    .info-value {
+        text-align: left;
+    }
+    .upload-controls {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    .file-input {
+        width: 100%;
+    }
+}

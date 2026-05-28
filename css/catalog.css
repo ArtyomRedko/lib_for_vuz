@@ -150,10 +150,6 @@ body {
     width: auto;
 }
 
-/* ===== СКРЫВАЕМ БЛОК .catalog-controls (он не нужен) ===== */
-.catalog-controls {
-    display: none !important;
-}
 
 /* ===== СКРЫВАЕМ "VIEW ALL" ===== */
 .section-header {
@@ -462,3 +458,4 @@ body {
         max-width: 90%;
     }
 }
+
