@@ -1,1 +1,36 @@
-print("hello")
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+env/
+ENV/
+.venv
+pyvenv.cfg
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Project specific
+.DS_Store
+*.log
+*.sqlite3
+coverage.json
+.env.local
+
+# Uploads and static (если они создаются динамически)
+# uploads/
+# static/
+
+# Logs and temp
+*.log
+*.tmp
+*.temp
+
+# Docker
+*.pid
