@@ -6,6 +6,7 @@ on:
     branches:
       - main
       - master
+      - feature/deploy-server
   workflow_dispatch:
 
 jobs:
