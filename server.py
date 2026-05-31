@@ -1,6 +1,6 @@
 import mysql.connector
 from mysql.connector import Error
-from flask import Flask, request, jsonify, send_from_directory, send_file
+from flask import Flask, request, jsonify, send_from_directory, make_response
 import os
 from flask_cors import CORS
 from flask_restx import Api, Resource
@@ -13,6 +13,7 @@ from werkzeug.utils import secure_filename
 app = Flask(__name__, static_folder='.')
 swagger = Swagger(app)
 CORS(app)
+app.config['MAX_CONTENT_LENGTH'] = 50 * 1024 * 1024  # 50MB
 
 # DATABASE SECTION
 # Конфигурация БД из переменных окружения (для Docker)
@@ -30,9 +31,6 @@ def get_db_connection():
     except Error as e:
         print(f"Ошибка подключения: {e}")
         return None
-
-
-
 
 
 # END DATABASE SECTION
@@ -142,10 +140,6 @@ def import_covers():
         "errors": errors
     }), 200
 
-# @app.route('/uploads/PngBooks/<path:filename>')
-# def serve_image(filename):
-#     return send_from_directory('uploads/PngBooks', filename)
-
 @app.route('/')
 def index():
     return send_from_directory('.', 'html.html')
@@ -154,9 +148,13 @@ def index():
 # def catalog_html():
 #     return send_from_directory('.', 'catalog.html')
 
-# @app.route('/reader.html')
-# def reader_html():
-#     return send_from_directory('.', 'reader.html')
+@app.route('/reader.html')
+def reader_html():
+    response = make_response(send_from_directory('.', 'reader.html'))
+    response.headers['Cache-Control'] = 'no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0'
+    response.headers['Pragma'] = 'no-cache'
+    response.headers['Expires'] = '0'
+    return response
 
 # @app.route('/mainPage')
 # def mainPage():
@@ -325,23 +323,30 @@ def request_book_info():
     params = (book_id,)
     cursor.execute(parse_book_info, params)
     
-    booInfo = cursor.fetchall()[0]  # <- здесь переменная называется booInfo
+    booInfo = cursor.fetchall()[0]
     
     cursor.close()
     conn.close()
     
     print('#7' * 20)
     
-    # Исправлено: booInfo вместо bookInfo
     cover_url = booInfo[4] if booInfo[4] and booInfo[4] != '' else "/static/placeholder.png"
     
-    return jsonify({
+    # Создаём ответ с заголовками безопасности
+    response = jsonify({
         "title": booInfo[0],
         "autor": booInfo[1],
         "link": booInfo[2],
         "last_page": booInfo[3],
         "cover_url": cover_url
     })
+    
+    # Cache-Control: no-store для страниц книги (без кэширования)
+    response.headers['Cache-Control'] = 'no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0'
+    response.headers['Pragma'] = 'no-cache'
+    response.headers['Expires'] = '0'
+    
+    return response
 
 @app.route('/static/placeholder.png')
 def serve_placeholder():
@@ -420,7 +425,9 @@ if __name__ == '__main__':
     app.run(host=host, port=port, debug=debug)
 
 
-
+@app.errorhandler(413)
+def too_large(e):
+    return jsonify({"error": "File too large. Maximum size is 50MB"}), 413
 
 # http://100.86.48.107:8080/parserMessages?a=5&b=6
 # @app.route('/parserMessages', methods=['GET'])
