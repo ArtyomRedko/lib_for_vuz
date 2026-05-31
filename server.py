@@ -1,6 +1,6 @@
 import mysql.connector
 from mysql.connector import Error
-from flask import Flask, request, jsonify, send_from_directory
+from flask import Flask, request, jsonify, send_from_directory, send_file
 import os
 from flask_cors import CORS
 from flask_restx import Api, Resource
@@ -146,9 +146,9 @@ def import_covers():
 # def serve_image(filename):
 #     return send_from_directory('uploads/PngBooks', filename)
 
-# @app.route('/')
-# def index():
-#     return send_from_directory('.', 'catalog.html')
+@app.route('/')
+def index():
+    return send_from_directory('.', 'html.html')
 
 # @app.route('/catalog.html')
 # def catalog_html():
