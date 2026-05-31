@@ -146,9 +146,9 @@ def import_covers():
 # def serve_image(filename):
 #     return send_from_directory('uploads/PngBooks', filename)
 
-# @app.route('/')
-# def index():
-#     return send_from_directory('.', 'catalog.html')
+@app.route('/')
+def index():
+    return send_from_directory('.', 'html.html')
 
 # @app.route('/catalog.html')
 # def catalog_html():
