@@ -7,6 +7,7 @@ from flask_restx import Api, Resource
 from pdf2image import convert_from_path
 import time
 from flasgger import Swagger
+from werkzeug.utils import secure_filename
 
 
 app = Flask(__name__, static_folder='.')
@@ -14,12 +15,12 @@ swagger = Swagger(app)
 CORS(app)
 
 # DATABASE SECTION
-
+# Конфигурация БД из переменных окружения (для Docker)
 DB_CONFIG = {
-    'host': 'localhost',
-    'user': 'root',
-    'password': '220103гш',
-    'database': 'BookLibraryForUniversity'
+    'host': os.environ.get('DB_HOST', 'localhost'),
+    'user': os.environ.get('DB_USER', 'root'),
+    'password': os.environ.get('DB_PASSWORD', '220103гш'),
+    'database': os.environ.get('DB_NAME', 'BookLibraryForUniversity')
 }
 
 def get_db_connection():
@@ -43,6 +44,103 @@ def cleanerFromPdf(name):
 # Папка для сохранения PDF
 UPLOAD_FOLDER = 'uploads'
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+
+# Разрешенные расширения
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif', 'webp'}
+
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+@app.route('/api/admin/books/<int:book_id>/cover', methods=['POST'])
+def upload_cover(book_id):
+    """Загрузка обложки в папку с книгой"""
+    
+    # Получаем название книги из БД
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute("SELECT title FROM Books WHERE id = %s", (book_id,))
+    result = cursor.fetchone()
+    cursor.close()
+    conn.close()
+    
+    if not result:
+        return jsonify({"error": "Book not found"}), 404
+    
+    book_title = result[0]
+    clean_title = book_title.replace(' ', '_')  # "Test book" -> "Test_book"
+    
+    # Проверяем файл
+    if 'cover' not in request.files:
+        return jsonify({"error": "No file provided"}), 400
+    
+    file = request.files['cover']
+    
+    if file.filename == '':
+        return jsonify({"error": "No file selected"}), 400
+    
+    # Разрешенные расширения
+    allowed_extensions = {'png', 'jpg', 'jpeg', 'gif', 'webp'}
+    ext = file.filename.rsplit('.', 1)[1].lower()
+    if ext not in allowed_extensions:
+        return jsonify({"error": "File type not allowed"}), 400
+    
+    # СОЗДАЁМ ПАПКУ ДЛЯ КНИГИ (правильный путь)
+    book_dir = os.path.join('uploads', 'PngBooks', f'Directory-{clean_title}')
+    os.makedirs(book_dir, exist_ok=True)
+    
+    # Сохраняем файл
+    filename = f"{clean_title}_0.{ext}"
+    filepath = os.path.join(book_dir, filename)
+    file.save(filepath)
+    
+    # URL для БД
+    cover_url = f"/uploads/PngBooks/Directory-{clean_title}/{filename}"
+    
+    # Обновляем БД
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute("UPDATE Books SET cover_url = %s WHERE id = %s", (cover_url, book_id))
+    conn.commit()
+    cursor.close()
+    conn.close()
+    
+    return jsonify({
+        "status": "success",
+        "message": f"Cover uploaded for book {book_id}",
+        "cover_url": cover_url
+    }), 200
+
+@app.route('/api/admin/books/import-covers', methods=['POST'])
+def import_covers():
+    """Массовый импорт обложек (записывает URL в БД)"""
+    data = request.get_json()
+    
+    if not data or 'covers' not in data:
+        return jsonify({"error": "Invalid data. Expected { 'covers': {book_id: cover_url} }"}), 400
+    
+    covers_data = data['covers']
+    updated_count = 0
+    errors = []
+    
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    
+    for book_id, cover_url in covers_data.items():
+        try:
+            cursor.execute("UPDATE Books SET cover_url = %s WHERE id = %s", (cover_url, int(book_id)))
+            conn.commit()
+            updated_count += cursor.rowcount
+        except Error as e:
+            errors.append(f"Book {book_id}: {str(e)}")
+    
+    cursor.close()
+    conn.close()
+    
+    return jsonify({
+        "status": "success",
+        "updated_count": updated_count,
+        "errors": errors
+    }), 200
 
 # @app.route('/uploads/PngBooks/<path:filename>')
 # def serve_image(filename):
@@ -195,44 +293,59 @@ def request_books():
     print('request_books' * 20)
     start_index = int(request.form["start_index"])
     end_index = int(request.form["end_index"])
-
     
     conn = get_db_connection()
     cursor = conn.cursor()
-    parse_books_by_index = 'select id, title, autor, book_year, link from BookLibraryForUniversity.Books where id > %s and id < %s;'
+    parse_books_by_index = 'SELECT id, title, autor, book_year, link, cover_url FROM Books WHERE id > %s AND id < %s;'
     params = (start_index, end_index)
     cursor.execute(parse_books_by_index, params)
     
-    bookList = '@'.join([','.join([str(x) if x is not None else "" for x in t]) for t in cursor.fetchall()])
-
+    books = []
+    for row in cursor.fetchall():
+        id_, title, autor, book_year, link, cover_url = row
+        # Важно: НЕ заменяем на плейсхолдер здесь!
+        # Отдаём реальный cover_url (даже если NULL)
+        books.append([id_, title, autor, book_year, link, cover_url if cover_url else ''])
+    
     cursor.close()
     conn.close()
-
-    print(bookList)
-    print('#2' * 20)
-
+    
+    bookList = '@'.join([','.join([str(x) if x is not None else "" for x in book]) for book in books])
+    
     return jsonify({"BookList": bookList})
 
 @app.route('/request_book_info', methods=['POST'])
 def request_book_info():
     print('\n-------request_book_info-----------\n')
     book_id = int(request.form["book_id"])
-
     
     conn = get_db_connection()
     cursor = conn.cursor()
-    parse_book_info = 'select title, autor, link, last_page from BookLibraryForUniversity.Books where id = %s;'
+    parse_book_info = 'select title, autor, link, last_page, cover_url from Books where id = %s;'
     params = (book_id,)
     cursor.execute(parse_book_info, params)
     
-    booInfo = cursor.fetchall()[0]
-
+    booInfo = cursor.fetchall()[0]  # <- здесь переменная называется booInfo
+    
     cursor.close()
     conn.close()
-
+    
     print('#7' * 20)
+    
+    # Исправлено: booInfo вместо bookInfo
+    cover_url = booInfo[4] if booInfo[4] and booInfo[4] != '' else "/static/placeholder.png"
+    
+    return jsonify({
+        "title": booInfo[0],
+        "autor": booInfo[1],
+        "link": booInfo[2],
+        "last_page": booInfo[3],
+        "cover_url": cover_url
+    })
 
-    return jsonify({"title": booInfo[0], "autor": booInfo[1], "link": booInfo[2], "last_page": booInfo[3]})
+@app.route('/static/placeholder.png')
+def serve_placeholder():
+    return send_from_directory('static', 'placeholder.png')
 
 @app.route('/request_login', methods=['POST'])
 def request_request_login():
@@ -282,28 +395,29 @@ def request_request_register():
     return jsonify({"result": "success"})
 
 
-# uploads/PngBooks
 def saveJpegsFromPdf(namePdf, clearNamePdf):
-    pages = convert_from_path(f'uploads/{namePdf}', 150, poppler_path=r"D:\poppler\Library\bin")
+    # В Docker poppler уже установлен в системе через apt-get install poppler-utils
+    # Путь указывать не нужно - convert_from_path сам найдет poppler
+    pages = convert_from_path(f'uploads/{namePdf}', 150)
     os.mkdir(f'uploads/PngBooks/Directory-{clearNamePdf}')
     maxPage = 0
-
     for count, page in enumerate(pages):
         maxPage += 1
         page.save(f'uploads/PngBooks/Directory-{clearNamePdf}/{clearNamePdf}_{count}.jpg', 'JPEG')
-
     return maxPage
-
-
-
-
 
 
 if __name__ == '__main__':
     if not os.path.exists('uploads/PngBooks'):
         os.mkdir('uploads/PngBooks')
-    print(f"\n\nrun in browser by url earler ^ --\n\n")
-    app.run(host='127.0.0.1', port=8080, debug=True)
+    
+    # Для Docker используем 0.0.0.0 и порт из переменных
+    host = os.environ.get('HOST', '0.0.0.0')
+    port = int(os.environ.get('PORT', 5000))
+    debug = os.environ.get('DEBUG', 'False').lower() == 'true'
+    
+    print(f"\n\nСервер запущен на http://{host}:{port}\n\n")
+    app.run(host=host, port=port, debug=debug)
 
 
 

@@ -1,0 +1,7 @@
+flask
+flask-cors
+flask-restx
+flasgger
+mysql-connector-python
+pdf2image
+Pillow

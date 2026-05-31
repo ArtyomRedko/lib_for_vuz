@@ -184,18 +184,28 @@
     }
 
 
-
     async function initCatalog() {
         textList = await request_books(0, 15);
+        console.log('Raw response:', textList);  // Отладка
+        
         let rowdata = textList.BookList.split("@").map((x) => x.split(","));
-        BOOKS_DATA = rowdata.map(([id, title, author, year, cover]) => ({
-            id: id,
-            title: title,
-            author: author,
-            year: year,
-            cover: cover
-        }));
-        // window.alert(BOOKS_DATA);
+        console.log('Rowdata:', rowdata);  // Отладка
+        
+        BOOKS_DATA = rowdata.map((book) => {
+            // book это массив: [id, title, author, year, link, cover_url]
+            // Индексы:  0    1      2       3     4      5
+            return {
+                id: book[0],
+                title: book[1],
+                author: book[2],
+                year: book[3],
+                cover: (book[5] && book[5] !== '') ? book[5] : '/static/placeholder.png'
+                //      ↑ cover_url на позиции 5
+            };
+        });
+        
+        console.log('BOOKS_DATA:', BOOKS_DATA);  // Отладка
+        
         filteredBooks = [...BOOKS_DATA];
         currentPage = 1;
         renderCatalog();
