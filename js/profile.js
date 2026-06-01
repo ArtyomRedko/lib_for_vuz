@@ -1,6 +1,15 @@
 function initForms(){
     let request = document.getElementById("request");
     let resultField = document.getElementById("result");
+    let profile_verification = document.getElementById("profile-verification");
+    let profile_main = document.getElementById("profile-main");
+    let profile_logout_btn = document.getElementById("profile-logout-btn");
+
+    if(getUserSession().isLogined == true){
+        // window.alert("logined");
+        profile_verification.setAttribute('hidden', 'hidden');
+        profile_main.removeAttribute("hidden", "hidden");
+    }
 
     
     request.addEventListener("click", async function (){
@@ -18,9 +27,14 @@ function initForms(){
         let textResult = await uploadPDF(pdfInput, pdfInput.name, userInfo.user_name);
         textJsonPdf = textResult.link;
         resultField.setAttribute('hidden', 'hidden');
-        window.alert("book is loaded"/*textJsonPdf*/);
+        // window.alert("book is loaded"/*textJsonPdf*/);
         globalLink = textJsonPdf;
         maxPageG = textResult.maxPage;
+    });
+
+    profile_logout_btn.addEventListener("click", function (){
+        saveUserSession({user_name: null, mail: null, isLogined: null});
+        window.location.reload();
     });
 }
 

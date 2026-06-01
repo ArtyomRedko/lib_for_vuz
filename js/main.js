@@ -88,6 +88,10 @@ async function initPage() {
     ]);
     setActiveMenu();
     initLoginToggle(); 
+
+    let register_login_buttons = document.getElementById("register_login_buttons");
+    if(getUserSession().isLogined == true) register_login_buttons.setAttribute('hidden', 'hidden');
+    
 }
 
 document.addEventListener('DOMContentLoaded', initPage);

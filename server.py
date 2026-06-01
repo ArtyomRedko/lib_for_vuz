@@ -7,7 +7,9 @@ from flask_restx import Api, Resource
 from pdf2image import convert_from_path
 import time
 from flasgger import Swagger
+import hashlib
 
+SECRET_PEPER = "OurLibKey"
 
 app = Flask(__name__, static_folder='.')
 swagger = Swagger(app)
@@ -18,7 +20,7 @@ CORS(app)
 DB_CONFIG = {
     'host': 'localhost',
     'user': 'root',
-    'password': '220103гш',
+    'password': '1234',
     'database': 'BookLibraryForUniversity'
 }
 
@@ -48,9 +50,9 @@ os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 # def serve_image(filename):
 #     return send_from_directory('uploads/PngBooks', filename)
 
-# @app.route('/')
-# def index():
-#     return send_from_directory('.', 'catalog.html')
+@app.route('/')
+def index():
+    return send_from_directory('.', 'catalog.html')
 
 # @app.route('/catalog.html')
 # def catalog_html():
@@ -239,6 +241,7 @@ def request_request_login():
     print('\n-------request_login-----------\n')
     mail = request.form["mail"]
     password = request.form["password"]
+    hash_password = hashlib.sha256((password + SECRET_PEPER).encode()).hexdigest()
 
     
     conn = get_db_connection()
@@ -248,7 +251,7 @@ def request_request_login():
     cursor.execute(parse_book_info, params)
     
     userInfo = cursor.fetchall()[0]
-    if userInfo[3] != password:
+    if userInfo[3] != hash_password:
         return jsonify({"result": "mail or password incorrect"})
     
     print(userInfo[0])
@@ -270,7 +273,8 @@ def request_request_register():
     conn = get_db_connection()
     cursor = conn.cursor()
     parse_book_info = 'insert into BookLibraryForUniversity.Users (user_name, mail, user_password, university_group, university_subgroup, university_role) values ( %s, %s, %s, %s, %s, %s);'
-    params = (fullName, mail, password, "sameGroup", "2", "student")
+    hash_password = hashlib.sha256((password + SECRET_PEPER).encode()).hexdigest()
+    params = (fullName, mail, hash_password, "sameGroup", "2", "student")
     cursor.execute(parse_book_info, params)
     conn.commit()
 
