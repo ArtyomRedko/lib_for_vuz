@@ -41,11 +41,14 @@
                 </div>
 
                 <div id="teacher">
-                    <div class="upload-section">
+                    <div class="upload-section" id="upload-section-id" >
                         <h4>Добавить новый материал</h4>
                         <p class="upload-description">Загрузите PDF-файл для публикации в каталоге.</p>
                         <div class="upload-controls">
                             <input type="file" id="pdfInput" accept=".pdf" class="file-input">
+                            <input type="text" id="profile-description" placeholder="description">
+                            <input type="text" id="profile-year" placeholder="year">
+                            <input type="text" id="profile-groups" placeholder="groups alowed">
                             <button id="request" class="btn-primary upload-btn">Загрузить</button>
                         </div>
                         <span hidden="hidden" id="result" class="upload-result"></span>

@@ -70,6 +70,10 @@ body {
     display: flex;
     gap: 12px;
 }
+.user-actions[hidden] {
+    display: none !important;
+}
+
 .btn-outline,
 .btn-primary {
     padding: 8px 22px;

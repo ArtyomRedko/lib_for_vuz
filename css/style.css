@@ -722,6 +722,10 @@ body {
     align-items: center;
 }
 
+.upload-controls[hidden] {
+    display: none !important;
+}
+
 .file-input {
     flex: 1;
     border-radius: 40px;

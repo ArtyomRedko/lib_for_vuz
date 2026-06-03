@@ -8,6 +8,7 @@ from pdf2image import convert_from_path
 import time
 from flasgger import Swagger
 import hashlib
+import json
 
 SECRET_PEPER = "OurLibKey"
 
@@ -32,10 +33,6 @@ def get_db_connection():
         print(f"Ошибка подключения: {e}")
         return None
 
-
-
-
-
 # END DATABASE SECTION
 
 def cleanerFromPdf(name):
@@ -53,74 +50,6 @@ os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 @app.route('/')
 def index():
     return send_from_directory('.', 'catalog.html')
-
-# @app.route('/catalog.html')
-# def catalog_html():
-#     return send_from_directory('.', 'catalog.html')
-
-# @app.route('/reader.html')
-# def reader_html():
-#     return send_from_directory('.', 'reader.html')
-
-# @app.route('/mainPage')
-# def mainPage():
-#     return send_from_directory('.', 'index1.html')
-
-# @app.route('/index.js')
-# def serve_js():
-#     return send_from_directory('.', 'index.js')
-
-# @app.route('/js/main.js')
-# def main_js():
-#     return send_from_directory('.', 'js/main.js')
-
-# @app.route('/js/reader.js')
-# def reader_js():
-#     return send_from_directory('.', 'js/reader.js')
-
-# @app.route('/js/catalog.js')
-# def catalog_js():
-#     return send_from_directory('.', 'js/catalog.js')
-
-# @app.route('/js/auth.js')
-# def auth_js():
-#     return send_from_directory('.', 'js/auth.js')
-
-# @app.route('/js/profile.js')
-# def profile_js():
-#     return send_from_directory('.', 'js/profile.js')
-
-# @app.route('/js/initListenner.js')
-# def initListenner_js():
-#     return send_from_directory('.', 'js/initListenner.js')
-
-# @app.route('/index.css')
-# def serve_css():
-#     return send_from_directory('.', 'index.css')
-
-# @app.route('/css/style.css')
-# def style_css():
-#     return send_from_directory('.', 'css/style.css')
-
-# @app.route('/css/catalog.css')
-# def catalog_css():
-#     return send_from_directory('.', 'css/catalog.css')
-
-# @app.route('/components/footer.html')
-# def footer_html():
-#     return send_from_directory('.', 'components/footer.html')
-
-# @app.route('/components/header.html')
-# def header_html():
-#     return send_from_directory('.', 'components/header.html')
-
-# @app.route('/login.html')
-# def login_html():
-#     return send_from_directory('.', 'login.html')
-
-# @app.route('/profile.html')
-# def profile_html():
-#     return send_from_directory('.', 'profile.html')
 
 # /uploads/PngBooks
 @app.route('/uploads/PngBooks/<path:filename>')
@@ -161,23 +90,25 @@ def uploadPdf():
     file = request.files["pdf"]
     bookId = request.form["book_id"]
     autor = request.form["autor"] # autor
+    description = request.form["description"]
+    year = request.form["year"]
+    groups = request.form["groups"]
 
-    host_url = request.host_url.rstrip('/')
     
     filename = f"{bookId}.pdf"
     clearNamePdf = cleanerFromPdf(filename)
     filePath = os.path.join(UPLOAD_FOLDER, filename)
     file.save(filePath)
-    
-    maxPage = saveJpegsFromPdf(filename, clearNamePdf)
 
+    formated_groups = json.dumps(groups.split())
+    maxPage = saveJpegsFromPdf(filename, clearNamePdf)
     DbLink = f"/uploads/PngBooks/Directory-{clearNamePdf}/{clearNamePdf}_0.jpg"
 
     conn = get_db_connection()
     cursor = conn.cursor()
     use_DB = 'USE BookLibraryForUniversity;'
-    query_insert_book_toDb = 'insert into Books (title, autor, book_description, link, last_page) values (%s, %s, %s, %s, %s);'
-    params = (clearNamePdf, autor, "description", DbLink, f"{maxPage}")
+    query_insert_book_toDb = 'insert into Books (title, autor, book_description, link, book_year, last_page, arr_groups) values (%s, %s, %s, %s, %s, %s, %s)'
+    params = (clearNamePdf, autor, description,  DbLink, year, f"{maxPage}", formated_groups)
     cursor.execute(use_DB)
     cursor.execute(query_insert_book_toDb, params)
     conn.commit()
@@ -197,12 +128,13 @@ def request_books():
     print('request_books' * 20)
     start_index = int(request.form["start_index"])
     end_index = int(request.form["end_index"])
+    group = request.form["group"]
 
     
     conn = get_db_connection()
     cursor = conn.cursor()
-    parse_books_by_index = 'select id, title, autor, book_year, link from BookLibraryForUniversity.Books where id > %s and id < %s;'
-    params = (start_index, end_index)
+    parse_books_by_index = 'select id, title, autor, book_year, link from BookLibraryForUniversity.Books where id > %s and id < %s and JSON_CONTAINS(arr_groups, %s);'
+    params = (start_index, end_index, json.dumps(group))
     cursor.execute(parse_books_by_index, params)
     
     bookList = '@'.join([','.join([str(x) if x is not None else "" for x in t]) for t in cursor.fetchall()])
@@ -246,7 +178,7 @@ def request_request_login():
     
     conn = get_db_connection()
     cursor = conn.cursor()
-    parse_book_info = 'SELECT user_name, mail, university_group, user_password FROM BookLibraryForUniversity.Users where mail = %s;'
+    parse_book_info = 'SELECT user_name, mail, university_group, user_password, university_role FROM BookLibraryForUniversity.Users where mail = %s;'
     params = (mail,)
     cursor.execute(parse_book_info, params)
     
@@ -260,7 +192,7 @@ def request_request_login():
 
     print('#8' * 20)
 
-    return jsonify({"name": userInfo[0], "mail": userInfo[1], "group": userInfo[2], "result": "success"})
+    return jsonify({"name": userInfo[0], "mail": userInfo[1], "group": userInfo[2], "role": userInfo[4], "result": "success"})
 
 @app.route('/request_register', methods=['POST'])
 def request_request_register():
@@ -268,13 +200,15 @@ def request_request_register():
     mail = request.form["mail"]
     password = request.form["password"]
     fullName = request.form["fullName"]
+    role = request.form["role"]
+    group = request.form["group"]
 
     
     conn = get_db_connection()
     cursor = conn.cursor()
     parse_book_info = 'insert into BookLibraryForUniversity.Users (user_name, mail, user_password, university_group, university_subgroup, university_role) values ( %s, %s, %s, %s, %s, %s);'
     hash_password = hashlib.sha256((password + SECRET_PEPER).encode()).hexdigest()
-    params = (fullName, mail, hash_password, "sameGroup", "2", "student")
+    params = (fullName, mail, hash_password, group, "2", role)
     cursor.execute(parse_book_info, params)
     conn.commit()
 
@@ -288,8 +222,8 @@ def request_request_register():
 
 # uploads/PngBooks
 def saveJpegsFromPdf(namePdf, clearNamePdf):
-    pages = convert_from_path(f'uploads/{namePdf}', 150, poppler_path=r"D:\poppler\Library\bin")
-    os.mkdir(f'uploads/PngBooks/Directory-{clearNamePdf}')
+    pages = convert_from_path(f'uploads/{namePdf}', 150 ) #, poppler_path=r"D:\poppler\Library\bin")
+    os.makedirs(f'uploads/PngBooks/Directory-{clearNamePdf}', exist_ok=True)
     maxPage = 0
 
     for count, page in enumerate(pages):
@@ -297,10 +231,6 @@ def saveJpegsFromPdf(namePdf, clearNamePdf):
         page.save(f'uploads/PngBooks/Directory-{clearNamePdf}/{clearNamePdf}_{count}.jpg', 'JPEG')
 
     return maxPage
-
-
-
-
 
 
 if __name__ == '__main__':

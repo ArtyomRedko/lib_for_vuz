@@ -4,9 +4,9 @@ function saveUserSession(userData) {
         user_name: userData.user_name,
         mail: userData.mail,
         isLogined: userData.isLogined,
-        /*university_role: userData.role,
-        university_group: userData.group,
-        university_subgroup: userData.university_subgroup*/
+        role: userData.role,
+        group: userData.group,
+        /*university_subgroup: userData.university_subgroup*/
     }));
 }
 
