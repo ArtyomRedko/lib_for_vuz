@@ -8,7 +8,10 @@ from pdf2image import convert_from_path
 import time
 from flasgger import Swagger
 from werkzeug.utils import secure_filename
+import hashlib
+import json
 
+SECRET_PEPER = "OurLibKey"
 
 app = Flask(__name__, static_folder='.')
 swagger = Swagger(app)
@@ -218,6 +221,9 @@ def reader_html():
 # @app.route('/profile.html')
 # def profile_html():
 #     return send_from_directory('.', 'profile.html')
+@app.route('/')
+def index():
+    return send_from_directory('.', 'catalog.html')
 
 # /uploads/PngBooks
 @app.route('/uploads/PngBooks/<path:filename>')
@@ -258,23 +264,25 @@ def uploadPdf():
     file = request.files["pdf"]
     bookId = request.form["book_id"]
     autor = request.form["autor"] # autor
+    description = request.form["description"]
+    year = request.form["year"]
+    groups = request.form["groups"]
 
-    host_url = request.host_url.rstrip('/')
     
     filename = f"{bookId}.pdf"
     clearNamePdf = cleanerFromPdf(filename)
     filePath = os.path.join(UPLOAD_FOLDER, filename)
     file.save(filePath)
-    
-    maxPage = saveJpegsFromPdf(filename, clearNamePdf)
 
+    formated_groups = json.dumps(groups.split())
+    maxPage = saveJpegsFromPdf(filename, clearNamePdf)
     DbLink = f"/uploads/PngBooks/Directory-{clearNamePdf}/{clearNamePdf}_0.jpg"
 
     conn = get_db_connection()
     cursor = conn.cursor()
     use_DB = 'USE BookLibraryForUniversity;'
-    query_insert_book_toDb = 'insert into Books (title, autor, book_description, link, last_page) values (%s, %s, %s, %s, %s);'
-    params = (clearNamePdf, autor, "description", DbLink, f"{maxPage}")
+    query_insert_book_toDb = 'insert into Books (title, autor, book_description, link, book_year, last_page, arr_groups) values (%s, %s, %s, %s, %s, %s, %s)'
+    params = (clearNamePdf, autor, description,  DbLink, year, f"{maxPage}", formated_groups)
     cursor.execute(use_DB)
     cursor.execute(query_insert_book_toDb, params)
     conn.commit()
@@ -294,11 +302,13 @@ def request_books():
     print('request_books' * 20)
     start_index = int(request.form["start_index"])
     end_index = int(request.form["end_index"])
+    group = request.form["group"]
+
     
     conn = get_db_connection()
     cursor = conn.cursor()
-    parse_books_by_index = 'SELECT id, title, autor, book_year, link, cover_url FROM Books WHERE id > %s AND id < %s;'
-    params = (start_index, end_index)
+    parse_books_by_index = 'select id, title, autor, book_year, link from BookLibraryForUniversity.Books where id > %s and id < %s and JSON_CONTAINS(arr_groups, %s);'
+    params = (start_index, end_index, json.dumps(group))
     cursor.execute(parse_books_by_index, params)
     
     books = []
@@ -360,16 +370,17 @@ def request_request_login():
     print('\n-------request_login-----------\n')
     mail = request.form["mail"]
     password = request.form["password"]
+    hash_password = hashlib.sha256((password + SECRET_PEPER).encode()).hexdigest()
 
     
     conn = get_db_connection()
     cursor = conn.cursor()
-    parse_book_info = 'SELECT user_name, mail, university_group, user_password FROM BookLibraryForUniversity.Users where mail = %s;'
+    parse_book_info = 'SELECT user_name, mail, university_group, user_password, university_role FROM BookLibraryForUniversity.Users where mail = %s;'
     params = (mail,)
     cursor.execute(parse_book_info, params)
     
     userInfo = cursor.fetchall()[0]
-    if userInfo[3] != password:
+    if userInfo[3] != hash_password:
         return jsonify({"result": "mail or password incorrect"})
     
     print(userInfo[0])
@@ -378,7 +389,7 @@ def request_request_login():
 
     print('#8' * 20)
 
-    return jsonify({"name": userInfo[0], "mail": userInfo[1], "group": userInfo[2], "result": "success"})
+    return jsonify({"name": userInfo[0], "mail": userInfo[1], "group": userInfo[2], "role": userInfo[4], "result": "success"})
 
 @app.route('/request_register', methods=['POST'])
 def request_request_register():
@@ -386,12 +397,15 @@ def request_request_register():
     mail = request.form["mail"]
     password = request.form["password"]
     fullName = request.form["fullName"]
+    role = request.form["role"]
+    group = request.form["group"]
 
     
     conn = get_db_connection()
     cursor = conn.cursor()
     parse_book_info = 'insert into BookLibraryForUniversity.Users (user_name, mail, user_password, university_group, university_subgroup, university_role) values ( %s, %s, %s, %s, %s, %s);'
-    params = (fullName, mail, password, "sameGroup", "2", "student")
+    hash_password = hashlib.sha256((password + SECRET_PEPER).encode()).hexdigest()
+    params = (fullName, mail, hash_password, group, "2", role)
     cursor.execute(parse_book_info, params)
     conn.commit()
 
@@ -407,7 +421,7 @@ def saveJpegsFromPdf(namePdf, clearNamePdf):
     # В Docker poppler уже установлен в системе через apt-get install poppler-utils
     # Путь указывать не нужно - convert_from_path сам найдет poppler
     pages = convert_from_path(f'uploads/{namePdf}', 150)
-    os.mkdir(f'uploads/PngBooks/Directory-{clearNamePdf}')
+    os.makedirs(f'uploads/PngBooks/Directory-{clearNamePdf}', exist_ok=True)
     maxPage = 0
     for count, page in enumerate(pages):
         maxPage += 1

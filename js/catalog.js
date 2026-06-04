@@ -1,21 +1,6 @@
 // Эту логику делала нейронка, нужно все поменять
-(function() {
-    // BOOKS_DATA = [
-    //     { id: 1, title: "Мастер и Маргарита", author: "Михаил Булгаков", year: 1967, cover: "📖" },
-    //     { id: 2, title: "Преступление и наказание", author: "Фёдор Достоевский", year: 1866, cover: "📘" },
-    //     { id: 3, title: "Война и мир", author: "Лев Толстой", year: 1869, cover: "📕" },
-    //     { id: 4, title: "Евгений Онегин", author: "Александр Пушкин", year: 1833, cover: "📙" },
-    //     { id: 5, title: "Мёртвые души", author: "Николай Гоголь", year: 1842, cover: "📔" },
-    //     { id: 6, title: "Тихий Дон", author: "Михаил Шолохов", year: 1940, cover: "📗" },
-    //     { id: 7, title: "Собачье сердце", author: "Михаил Булгаков", year: 1925, cover: "📓" },
-    //     { id: 8, title: "Анна Каренина", author: "Лев Толстой", year: 1877, cover: "📒" },
-    //     { id: 9, title: "Идиот", author: "Фёдор Достоевский", year: 1869, cover: "📚" },
-    //     { id: 10, title: "Братья Карамазовы", author: "Фёдор Достоевский", year: 1880, cover: "📜" },
-    //     { id: 11, title: "Капитанская дочка", author: "Александр Пушкин", year: 1836, cover: "📖" },
-    //     { id: 12, title: "Герой нашего времени", author: "Михаил Лермонтов", year: 1840, cover: "📘" },
-    //     { id: 13, title: "Ревизор", author: "Николай Гоголь", year: 1836, cover: "📙" },
-    //     { id: 14, title: "Отцы и дети", author: "Иван Тургенев", year: 1862, cover: "📗" }
-    // ];
+function catalogInit() {
+
     BOOKS_DATA = [];
     
 
@@ -23,7 +8,7 @@
     BooksData2 = [];
 
     let currentPage = 1;
-    let filteredBooks = [...BOOKS_DATA];
+    // let filteredBooks = [...BOOKS_DATA];
     const BOOKS_PER_PAGE = 8;
 
     const catalogGrid = document.getElementById('catalogGrid');
@@ -67,10 +52,11 @@
 
 
     // request for boks here...
-    async function request_books(start_index, end_index) {
+    async function request_books(start_index, end_index, group) {
         const formData = new FormData();
         formData.append('start_index', start_index);
         formData.append('end_index', end_index);
+        formData.append('group', group);
         
         return await usePostRequest('/request_books', formData);
     }
@@ -185,9 +171,7 @@
 
 
     async function initCatalog() {
-        textList = await request_books(0, 15);
-        console.log('Raw response:', textList);  // Отладка
-        
+        textList = await request_books(0, 15, getUserSession().group);
         let rowdata = textList.BookList.split("@").map((x) => x.split(","));
         console.log('Rowdata:', rowdata);  // Отладка
         
@@ -217,4 +201,6 @@
     } else {
         initCatalog();
     }
-})();
+};
+
+document.addEventListener('DOMContentLoaded', catalogInit);

@@ -3,15 +3,16 @@ function saveUserSession(userData) {
     localStorage.setItem('user', JSON.stringify({
         user_name: userData.user_name,
         mail: userData.mail,
-        isLogined: true,
-        /*university_role: userData.role,
-        university_group: userData.group,
-        university_subgroup: userData.university_subgroup*/
+        isLogined: userData.isLogined,
+        role: userData.role,
+        group: userData.group,
+        /*university_subgroup: userData.university_subgroup*/
     }));
 }
 
 function getUserSession() {
     const userData = localStorage.getItem('user');
+    if (!userData) return null;  // ← важно: проверяем, есть ли данные
     const parsed = JSON.parse(userData);
     return parsed;
 }
