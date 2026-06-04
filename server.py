@@ -142,7 +142,10 @@ def import_covers():
 
 @app.route('/')
 def index():
-    return send_from_directory('.', 'html.html')
+    response = send_from_directory('.', 'html.html')
+    response.headers['Content-Type'] = 'text/html; charset=utf-8'
+    return response
+
 
 # @app.route('/catalog.html')
 # def catalog_html():
