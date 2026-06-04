@@ -23,7 +23,7 @@ app.config['MAX_CONTENT_LENGTH'] = 50 * 1024 * 1024  # 50MB
 DB_CONFIG = {
     'host': os.environ.get('DB_HOST', 'localhost'),
     'user': os.environ.get('DB_USER', 'root'),
-    'password': os.environ.get('DB_PASSWORD', '220103гш'),
+    'password': os.environ.get('DB_PASSWORD', '1234'),
     'database': os.environ.get('DB_NAME', 'BookLibraryForUniversity')
 }
 
@@ -143,17 +143,6 @@ def import_covers():
         "errors": errors
     }), 200
 
-@app.route('/')
-def index():
-    response = send_from_directory('.', 'html.html')
-    response.headers['Content-Type'] = 'text/html; charset=utf-8'
-    return response
-
-
-# @app.route('/catalog.html')
-# def catalog_html():
-#     return send_from_directory('.', 'catalog.html')
-
 @app.route('/reader.html')
 def reader_html():
     response = make_response(send_from_directory('.', 'reader.html'))
@@ -162,68 +151,10 @@ def reader_html():
     response.headers['Expires'] = '0'
     return response
 
-# @app.route('/mainPage')
-# def mainPage():
-#     return send_from_directory('.', 'index1.html')
 
-# @app.route('/index.js')
-# def serve_js():
-#     return send_from_directory('.', 'index.js')
-
-# @app.route('/js/main.js')
-# def main_js():
-#     return send_from_directory('.', 'js/main.js')
-
-# @app.route('/js/reader.js')
-# def reader_js():
-#     return send_from_directory('.', 'js/reader.js')
-
-# @app.route('/js/catalog.js')
-# def catalog_js():
-#     return send_from_directory('.', 'js/catalog.js')
-
-# @app.route('/js/auth.js')
-# def auth_js():
-#     return send_from_directory('.', 'js/auth.js')
-
-# @app.route('/js/profile.js')
-# def profile_js():
-#     return send_from_directory('.', 'js/profile.js')
-
-# @app.route('/js/initListenner.js')
-# def initListenner_js():
-#     return send_from_directory('.', 'js/initListenner.js')
-
-# @app.route('/index.css')
-# def serve_css():
-#     return send_from_directory('.', 'index.css')
-
-# @app.route('/css/style.css')
-# def style_css():
-#     return send_from_directory('.', 'css/style.css')
-
-# @app.route('/css/catalog.css')
-# def catalog_css():
-#     return send_from_directory('.', 'css/catalog.css')
-
-# @app.route('/components/footer.html')
-# def footer_html():
-#     return send_from_directory('.', 'components/footer.html')
-
-# @app.route('/components/header.html')
-# def header_html():
-#     return send_from_directory('.', 'components/header.html')
-
-# @app.route('/login.html')
-# def login_html():
-#     return send_from_directory('.', 'login.html')
-
-# @app.route('/profile.html')
-# def profile_html():
-#     return send_from_directory('.', 'profile.html')
 @app.route('/')
 def index():
-    return send_from_directory('.', 'catalog.html')
+    return send_from_directory('.', 'html.html')
 
 # /uploads/PngBooks
 @app.route('/uploads/PngBooks/<path:filename>')
