@@ -406,6 +406,24 @@ body {
     display: block;
 }
 
+.upload-controls label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500;
+    color: #2D2A24;
+    font-size: 0.9rem;
+}
+
+.upload-controls input {
+    width: 100%;
+    padding: 12px 16px;
+    border: 1px solid #E8E0D5;
+    border-radius: 30px;
+    font-size: 1rem;
+    background: white;
+    transition: 0.2s;
+}
+
 .form-group {
     margin-bottom: 20px;
 }

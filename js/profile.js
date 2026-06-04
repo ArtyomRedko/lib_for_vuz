@@ -47,7 +47,7 @@ function initForms(){
         let textResult = await uploadPDF(pdfInput, pdfInput.name, userInfo.user_name, profile_description.value, profile_year.value, profile_groups.value);
         textJsonPdf = textResult.link;
         resultField.setAttribute('hidden', 'hidden');
-        // window.alert("book is loaded"/*textJsonPdf*/);
+        window.alert(`book ${pdfInput.name} is loaded`/*textJsonPdf*/);
         globalLink = textJsonPdf;
         maxPageG = textResult.maxPage;
     });

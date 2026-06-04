@@ -182,9 +182,16 @@ def request_request_login():
     params = (mail,)
     cursor.execute(parse_book_info, params)
     
-    userInfo = cursor.fetchall()[0]
+    results = cursor.fetchall()
+    if not results:
+        return jsonify({"result": "mail or password incorrect"})
+    userInfo = results[0]
+
+    # userInfo = cursor.fetchall()[0]
     if userInfo[3] != hash_password:
         return jsonify({"result": "mail or password incorrect"})
+
+    
     
     print(userInfo[0])
     cursor.close()
@@ -237,7 +244,7 @@ if __name__ == '__main__':
     if not os.path.exists('uploads/PngBooks'):
         os.mkdir('uploads/PngBooks')
     print(f"\n\nrun in browser by url earler ^ --\n\n")
-    app.run(host='127.0.0.1', port=8080, debug=True)
+    app.run(host='127.0.0.1', port=8080, debug=False)
 
 
 

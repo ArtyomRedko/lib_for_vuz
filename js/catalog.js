@@ -88,9 +88,9 @@ function catalogInit() {
                 <div class="book-card" data-href="reader.html?id=${book.id}">
                     <div class="book-cover"><img class="cover" src="${book.cover}"></div>
                     <div class="book-info">
-                        <div class="book-title">${escapeHtml(book.title)}</div>
-                        <div class="book-author">${escapeHtml(book.author)}</div>
-                        <div class="book-year">${escapeHtml(book.year)}</div>
+                        <div class="book-title">название: ${escapeHtml(book.title)}</div>
+                        <div class="book-author">автор: ${escapeHtml(book.author)}</div>
+                        <div class="book-year">год: ${escapeHtml(book.year)}</div>
                         <a class="reader-link" href="reader.html?id=${book.id}">Подробнее</a>
                     </div>
                 </div>
