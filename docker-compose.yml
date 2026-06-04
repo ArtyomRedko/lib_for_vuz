@@ -1,3 +1,5 @@
+version: '3.8'
+
 services:
   mysql:
     image: mysql:8.0
@@ -10,13 +12,14 @@ services:
       - "3306:3306"
     volumes:
       - mysql_data:/var/lib/mysql
-      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql:ro
     networks:
       - library_network
     healthcheck:
       test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${MYSQL_ROOT_PASSWORD}"]
       timeout: 5s
       retries: 10
+      interval: 10s
 
   app:
     build: .
@@ -29,21 +32,45 @@ services:
       DB_NAME: ${MYSQL_DATABASE}
       HOST: 0.0.0.0
       PORT: 5000
+      DEBUG: "False"
     ports:
-      - "8080:5000"
+      - "5000:5000"
     volumes:
-      - .:/app
-      - /app/__pycache__
       - uploads_data:/app/uploads
+      - static_data:/app/static
     depends_on:
       mysql:
         condition: service_healthy
+    networks:
+      - library_network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5000/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  nginx:
+    image: nginx:alpine
+    container_name: library_nginx
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./ssl:/etc/nginx/ssl:ro
+      - static_data:/usr/share/nginx/html/static:ro
+      - uploads_data:/usr/share/nginx/html/uploads:ro
+      - ./covers:/usr/share/nginx/html/covers:ro
+    depends_on:
+      - app
     networks:
       - library_network
 
 volumes:
   mysql_data:
   uploads_data:
+  static_data:
 
 networks:
   library_network:

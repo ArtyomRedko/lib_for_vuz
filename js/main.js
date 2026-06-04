@@ -88,6 +88,23 @@ async function initPage() {
     ]);
     setActiveMenu();
     initLoginToggle(); 
+
+    // let register_login_buttons = document.getElementById("register_login_buttons");
+    // if(getUserSession().isLogined == true) register_login_buttons.setAttribute('hidden', 'hidden');
+    // else register_login_buttons.removeAttribute('hidden', 'hidden');
+
+    // Дождаться, пока DOM точно обновится
+    setTimeout(() => {
+        let register_login_buttons = document.getElementById("register_login_buttons");
+        if (register_login_buttons) {
+            if (getUserSession().isLogined == true) {
+                register_login_buttons.setAttribute('hidden', 'true');
+            } else {
+                register_login_buttons.removeAttribute('hidden');
+            }
+        }
+    }, 100); // или 100, если 0 не помогает
+    
 }
 
 document.addEventListener('DOMContentLoaded', initPage);

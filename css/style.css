@@ -84,6 +84,10 @@ body {
     gap: 12px;
 }
 
+.user-actions[hidden] {
+    display: none !important;
+}
+
 .btn-outline,
 .btn-primary {
     padding: 8px 22px;
@@ -716,6 +720,10 @@ body {
     flex-wrap: wrap;
     gap: 16px;
     align-items: center;
+}
+
+.upload-controls[hidden] {
+    display: none !important;
 }
 
 .file-input {
