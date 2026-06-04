@@ -48,6 +48,7 @@ function initForms(){
         textJsonPdf = textResult.link;
         resultField.setAttribute('hidden', 'hidden');
         window.alert(`book ${pdfInput.name} is loaded`/*textJsonPdf*/);
+        resultField.textContent = "";
         globalLink = textJsonPdf;
         maxPageG = textResult.maxPage;
     });

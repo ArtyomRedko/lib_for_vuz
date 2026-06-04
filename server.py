@@ -129,13 +129,20 @@ def request_books():
     start_index = int(request.form["start_index"])
     end_index = int(request.form["end_index"])
     group = request.form["group"]
+    role = request.form["role"]
 
     
     conn = get_db_connection()
     cursor = conn.cursor()
-    parse_books_by_index = 'select id, title, autor, book_year, link from BookLibraryForUniversity.Books where id > %s and id < %s and JSON_CONTAINS(arr_groups, %s);'
-    params = (start_index, end_index, json.dumps(group))
-    cursor.execute(parse_books_by_index, params)
+    parse_books_by_index_student = 'select id, title, autor, book_year, link from BookLibraryForUniversity.Books where id > %s and id < %s and JSON_CONTAINS(arr_groups, %s);'
+    parse_books_by_index_teacher = 'select id, title, autor, book_year, link from BookLibraryForUniversity.Books where id > %s and id < %s;'
+    params_for_student = (start_index, end_index, json.dumps(group))
+    params_for_teacher = (start_index, end_index, json.dumps(group))
+
+    if role == "student":
+        cursor.execute(parse_books_by_index_student, params_for_student)
+    else:
+        cursor.execute(parse_books_by_index_teacher, params_for_teacher)
     
     bookList = '@'.join([','.join([str(x) if x is not None else "" for x in t]) for t in cursor.fetchall()])
 
@@ -244,7 +251,7 @@ if __name__ == '__main__':
     if not os.path.exists('uploads/PngBooks'):
         os.mkdir('uploads/PngBooks')
     print(f"\n\nrun in browser by url earler ^ --\n\n")
-    app.run(host='127.0.0.1', port=8080, debug=False)
+    app.run(host='127.0.0.1', port=8080)
 
 
 

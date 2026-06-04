@@ -52,11 +52,12 @@ function catalogInit() {
 
 
     // request for boks here...
-    async function request_books(start_index, end_index, group) {
+    async function request_books(start_index, end_index, group, role) {
         const formData = new FormData();
         formData.append('start_index', start_index);
         formData.append('end_index', end_index);
         formData.append('group', group);
+        formData.append('role', role);
         
         return await usePostRequest('/request_books', formData);
     }
@@ -172,7 +173,7 @@ function catalogInit() {
 
 
     async function initCatalog() {
-        textList = await request_books(0, 15, getUserSession().group);
+        textList = await request_books(0, 15, getUserSession().group, getUserSession().role);
         let rowdata = textList.BookList.split("@").map((x) => x.split(","));
         BOOKS_DATA = rowdata.map(([id, title, author, year, cover]) => ({
             id: id,
