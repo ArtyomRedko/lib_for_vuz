@@ -238,7 +238,7 @@ def request_books():
     
     conn = get_db_connection()
     cursor = conn.cursor()
-    parse_books_by_index = 'select id, title, autor, book_year, link from BookLibraryForUniversity.Books where id > %s and id < %s and JSON_CONTAINS(arr_groups, %s);'
+    parse_books_by_index = 'select id, title, autor, book_year, link, cover_url from BookLibraryForUniversity.Books where id > %s and id < %s and JSON_CONTAINS(arr_groups, %s);'
     params = (start_index, end_index, json.dumps(group))
     cursor.execute(parse_books_by_index, params)
     
