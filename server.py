@@ -11,6 +11,7 @@ import hashlib
 import json
 
 SECRET_PEPER = "OurLibKey"
+RSUCCESS = "success"
 
 app = Flask(__name__, static_folder='.')
 swagger = Swagger(app)
@@ -85,7 +86,7 @@ def serve_all_html(filename):
 
     
 # /uploads/PngBooks/Directory-Presentation/Presentation_2.jpg
-@app.route('/upload_pdf', methods=['POST'])
+@app.route('/upload_pdf', methods=['POST']) # here change
 def uploadPdf():
     file = request.files["pdf"]
     bookId = request.form["book_id"]
@@ -101,6 +102,10 @@ def uploadPdf():
     file.save(filePath)
 
     formated_groups = json.dumps(groups.split())
+    if groups != "guest":
+        formated_groups = json.dumps(groups.split())
+
+        
     maxPage = saveJpegsFromPdf(filename, clearNamePdf)
     DbLink = f"/uploads/PngBooks/Directory-{clearNamePdf}/{clearNamePdf}_0.jpg"
 
@@ -120,7 +125,7 @@ def uploadPdf():
         os.remove(filePath)
         print(f"{filePath} - deleted")
 
-    return jsonify({"status": "ok", "maxPage": f"{maxPage}", "message": f"Книга {bookId} загружена", "link": f"{DbLink}"})
+    return jsonify({"status": RSUCCESS, "maxPage": f"{maxPage}", "message": f"Книга {bookId} загружена", "link": f"{DbLink}"})
 
 
 @app.route('/request_books', methods=['POST'])
@@ -134,15 +139,19 @@ def request_books():
     
     conn = get_db_connection()
     cursor = conn.cursor()
-    parse_books_by_index_student = 'select id, title, autor, book_year, link from BookLibraryForUniversity.Books where id > %s and id < %s and JSON_CONTAINS(arr_groups, %s);'
-    parse_books_by_index_teacher = 'select id, title, autor, book_year, link from BookLibraryForUniversity.Books where id > %s and id < %s;'
+    parse_books_by_index_student = 'select id, title, autor, book_year, link, book_description from BookLibraryForUniversity.Books where id > %s and id < %s and JSON_CONTAINS(arr_groups, %s);'
+    parse_books_by_index_teacher = 'select id, title, autor, book_year, link, book_description from BookLibraryForUniversity.Books where id > %s and id < %s;'
     params_for_student = (start_index, end_index, json.dumps(group))
-    params_for_teacher = (start_index, end_index, json.dumps(group))
+    params_for_teacher = (start_index, end_index)
 
-    if role == "student":
+    print("#" * 30)
+    print(role)
+    if role == "teacher":
+        cursor.execute(parse_books_by_index_teacher, params_for_teacher)
+    elif role == "student" or role == "guest":
         cursor.execute(parse_books_by_index_student, params_for_student)
     else:
-        cursor.execute(parse_books_by_index_teacher, params_for_teacher)
+        return jsonify({"result": "bad role"})
     
     bookList = '@'.join([','.join([str(x) if x is not None else "" for x in t]) for t in cursor.fetchall()])
 
@@ -152,7 +161,7 @@ def request_books():
     print(bookList)
     print('#2' * 20)
 
-    return jsonify({"BookList": bookList})
+    return jsonify({"result": RSUCCESS, "BookList": bookList})
 
 @app.route('/request_book_info', methods=['POST'])
 def request_book_info():
@@ -206,7 +215,7 @@ def request_request_login():
 
     print('#8' * 20)
 
-    return jsonify({"name": userInfo[0], "mail": userInfo[1], "group": userInfo[2], "role": userInfo[4], "result": "success"})
+    return jsonify({"name": userInfo[0], "mail": userInfo[1], "group": userInfo[2], "role": userInfo[4], "result": RSUCCESS})
 
 @app.route('/request_register', methods=['POST'])
 def request_request_register():
@@ -231,7 +240,7 @@ def request_request_register():
 
     print('#9' * 20)
 
-    return jsonify({"result": "success"})
+    return jsonify({"result": RSUCCESS})
 
 
 # uploads/PngBooks
@@ -251,7 +260,7 @@ if __name__ == '__main__':
     if not os.path.exists('uploads/PngBooks'):
         os.mkdir('uploads/PngBooks')
     print(f"\n\nrun in browser by url earler ^ --\n\n")
-    app.run(host='127.0.0.1', port=8080)
+    app.run(host='127.0.0.1', port=8080, debug=True)
 
 
 

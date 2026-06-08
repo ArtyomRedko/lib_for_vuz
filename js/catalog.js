@@ -84,18 +84,18 @@ function catalogInit() {
         }
         
         let html = '';
-        for (const book of paginatedBooks) {
+        for (const book of paginatedBooks) { // <a class="reader-link" href="reader.html?id=${book.id}">Подробнее</a>
             html += `
                 <div class="book-card" data-href="reader.html?id=${book.id}">
+                    
                     <div class="book-cover"><img class="cover" src="${book.cover}"></div>
                     <div class="book-info">
                         <div class="book-title">название: ${escapeHtml(book.title)}</div>
                         <div class="book-author">автор: ${escapeHtml(book.author)}</div>
                         <div class="book-year">год: ${escapeHtml(book.year)}</div>
-                        <a class="reader-link" href="reader.html?id=${book.id}">Подробнее</a>
+                        <div class="book-description">краткое описание: ${escapeHtml(book.description)}</div>
                     </div>
-                </div>
-                
+                </div>             
             `;
         }
         catalogGrid.innerHTML = html;
@@ -173,14 +173,16 @@ function catalogInit() {
 
 
     async function initCatalog() {
-        textList = await request_books(0, 15, getUserSession().group, getUserSession().role);
+        if (getUserSession().isLogined == null) textList = await request_books(0, 15, "guest", "guest");
+        else textList = await request_books(0, 15, getUserSession().group, getUserSession().role);
         let rowdata = textList.BookList.split("@").map((x) => x.split(","));
-        BOOKS_DATA = rowdata.map(([id, title, author, year, cover]) => ({
+        BOOKS_DATA = rowdata.map(([id, title, author, year, cover, description]) => ({
             id: id,
             title: title,
             author: author,
             year: year,
-            cover: cover
+            cover: cover,
+            description: description
         }));
         // window.alert(BOOKS_DATA);
         filteredBooks = [...BOOKS_DATA];

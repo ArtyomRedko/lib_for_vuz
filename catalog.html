@@ -7,7 +7,9 @@
     <link rel="stylesheet" href="/css/catalog.css">
 </head>
 <body>
-    <div id="header-container"></div>
+    <div id="header-container"><input type="checkbox" id="popup" hidden>
+        
+    </div>
 
     <div class="search-wrapper">
         <div class="search-bar hero-search">
@@ -32,7 +34,28 @@
             <a href="#" class="view-all">View All →</a>
         </div>
 
-        <div id="catalogGrid" class="catalog-grid"><div class="book-card"></div></div>
+        <div id="catalogGrid" class="catalog-grid">
+            <!-- <div class="book-card"></div> -->
+    
+        <div class="book-card">
+        <!-- Верхняя грань — обложка -->
+        <div class="face face1">
+            <div class="book-cover">
+                <img src="/uploads/PngBooks/Directory-Presentation (1)/Presentation (1)_0.jpg" alt="Presentation (1)">
+            </div>
+        </div>
+        <!-- Нижняя грань — описание (выезжает при наведении) -->
+        <div class="face face2">
+            <div class="face-content">
+                <h3>Presentation (1)</h3>
+                <p>Автор: asan alyadinov</p>
+                <p>Год: 1995</p>
+                <p>Пи-233</p>
+                <a href="#">Читать описание</a>
+            </div>
+        </div>
+    </div>
+    </div>
 
         <div class="pagination" id="catalogPagination">
             <button id="prevPageBtn" disabled>◀ Назад</button>
