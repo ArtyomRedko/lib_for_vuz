@@ -8,6 +8,8 @@
     let btnPrevious = document.getElementById('prevPageBtn');
     let btnNext = document.getElementById('nextPageBtn');
     let searchPage = document.getElementById('pageJumpInput');
+    let pageIndicator = document.getElementById('pageIndicator');
+    
 
     let book;
 
@@ -43,6 +45,7 @@
 
       book = new Book(book_info.title, book_info.autor, book_info.link, book_info.last_page, pageImage);
       book.displayPage();
+      searchPage.setAttribute("max", String(book_info.last_page))
     })();
 
     btnNext.addEventListener("click", function (){
@@ -119,6 +122,7 @@
     }
     displayPage(){
       pageImage.src = this.link;
+      pageIndicator.innerHTML = `Страница ${this.currentPage} / ${this.maxPage}`;
     }
   };
   }

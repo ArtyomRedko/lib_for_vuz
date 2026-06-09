@@ -17,9 +17,10 @@ function initForms(){
         if (result.result == "success") {
             window.alert("success login)");
             saveUserSession({user_name: result.name, mail: form_login_mail, isLogined: true, role: result.role, group: result.group});
+            location.reload();
         }
-        else window.alert("логин или пароль не верный(");
-        location.reload();
+        else window.alert(result.result);
+        
     })
 
     register_form.addEventListener("submit", async (e) => {
@@ -43,6 +44,7 @@ function initForms(){
         
         let result = await usePostRequest('/request_register', formData);
         if (result.result == "success") window.alert("success register)");
+        else window.alert("ошибка регистрации")
         // window.alert(result.result);
     })
 };

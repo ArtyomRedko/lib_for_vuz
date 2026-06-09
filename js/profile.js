@@ -44,16 +44,17 @@ function initForms(){
         else resultField.textContent = "wait for process)";
         let userInfo = getUserSession();
 
-        let textResult = await uploadPDF(pdfInput, pdfInput.name, userInfo.user_name, profile_description.value, profile_year.value, profile_groups.value);
+        let textResult = await uploadPDF(pdfInput, pdfInput.name, userInfo.user_name, profile_description.value, profile_year.value, (profile_groups.value != "" ? profile_groups.value : "guest"));
         textJsonPdf = textResult.link;
         resultField.setAttribute('hidden', 'hidden');
-        // window.alert("book is loaded"/*textJsonPdf*/);
+        window.alert(`book ${pdfInput.name} is loaded`/*textJsonPdf*/);
+        resultField.textContent = "";
         globalLink = textJsonPdf;
         maxPageG = textResult.maxPage;
     });
 
     profile_logout_btn.addEventListener("click", function (){
-        saveUserSession({user_name: null, mail: null, isLogined: null});
+        saveUserSession({user_name: null, mail: null, isLogined: null, role: null, group: null});
         window.location.reload();
     });
 }
